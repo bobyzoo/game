@@ -3,6 +3,7 @@
 #include <allegro5\allegro_font.h>
 #include <allegro5\allegro_ttf.h>
 #include "objects.h"
+#include<stdio.h>
 
 //GLOBALS==============================
 const int WIDTH = 1080;
@@ -32,13 +33,17 @@ void StartComet(Comet comets[], int size);
 void UpdateComet(Comet comets[], int size);
 void CollideComet(Comet comets[], int cSize, SpaceShip &ship);
 
+int cont=0;
 int main(void)
 {
 	//primitive variable
 	bool done = false;
+	int estagio = 0;
 	bool redraw = true;
 	const int FPS = 60;
 	bool isGameOver = false;
+	bool moved = false;
+	int numpulos = 0;
 
 	//object variables
 	SpaceShip ship;
@@ -85,8 +90,41 @@ int main(void)
 		ALLEGRO_EVENT ev;
 		al_wait_for_event(event_queue, &ev);
 
+
 		if(ev.type == ALLEGRO_EVENT_TIMER)
 		{
+
+		    if(ship.jump){
+
+                if(numpulos<=1){
+
+
+                 int jj []= {10,32,28,20,16,10,6,4,2,0};
+                 int time[]={2,4,6,8,12,13,15,16,17,19};
+                cont ++;
+                printf("%d\n",cont);
+
+
+                    if(cont == time[estagio]){
+                        estagio++;
+                    ship.y = ship.y - jj[estagio];
+                    printf("%d %d %d\n ",cont,estagio,ship.y);
+
+                    }
+
+                if(cont==19){
+                    cont = 0;
+                    estagio = 0;
+                    numpulos++;
+                    ship.jump = false;
+                }
+
+                }else{
+                 ship.jump = false;
+                }
+                }
+
+
 			redraw = true;
 			if(keys[UP])
 				MoveShipUp(ship);
@@ -99,7 +137,17 @@ int main(void)
 
 			if(!isGameOver)
 			{
+			    if((!moved) && (!ship.jump)){
+                    if((ship.x>=200)&&(ship.x<=800)){
+                       if((ship.y<=400)||(ship.y>=410)){
+                        MoveShipDown(ship);
+                       }
+                    }else{
+                        MoveShipDown(ship);
+                    }
+			    }
 				//UpdateBullet(bullets, NUM_BULLETS);
+				//	al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
 				//StartComet(comets, NUM_COMETS);
 				//UpdateComet(comets, NUM_COMETS);
 				//CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
@@ -122,18 +170,24 @@ int main(void)
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = true;
+				ship.jump = true;
+
 				break;
 			case ALLEGRO_KEY_DOWN:
 				keys[DOWN] = true;
+				moved = true;
 				break;
 			case ALLEGRO_KEY_LEFT:
 				keys[LEFT] = true;
+
 				break;
 			case ALLEGRO_KEY_RIGHT:
 				keys[RIGHT] = true;
+
 				break;
 			case ALLEGRO_KEY_SPACE:
 				keys[SPACE] = true;
+
 				FireBullet(bullets, NUM_BULLETS, ship);
 				break;
 			}
@@ -147,18 +201,25 @@ int main(void)
 				break;
 			case ALLEGRO_KEY_UP:
 				keys[UP] = false;
+				moved = false;
+
 				break;
 			case ALLEGRO_KEY_DOWN:
 				keys[DOWN] = false;
+
+				moved = false;
 				break;
 			case ALLEGRO_KEY_LEFT:
 				keys[LEFT] = false;
+				moved = false;
 				break;
 			case ALLEGRO_KEY_RIGHT:
 				keys[RIGHT] = false;
+				moved = false;
 				break;
 			case ALLEGRO_KEY_SPACE:
 				keys[SPACE] = false;
+				moved = false;
 				break;
 			}
 		}
@@ -169,11 +230,16 @@ int main(void)
 
 			if(!isGameOver)
 			{
-                DrawShip(ship);
+			     if((ship.y>=400)&&(ship.y<=404)){
+                            if((ship.x>=200)&&(ship.x<=800)){
+                            numpulos = 0;
+                            printf("novo jump\n\n");
+                            }}
+                //printf("\n\n\n%d\n\n\n",ship.y);
 				//DrawBullet(bullets, NUM_BULLETS);
 				//DrawComet(comets, NUM_COMETS);
 				al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
-
+                 DrawShip(ship);
 
 				al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
 			}
@@ -197,11 +263,11 @@ int main(void)
 
 void InitShip(SpaceShip &ship)
 {
-	ship.x = 20;
-	ship.y = HEIGHT / 2;
+	ship.x = WIDTH/2;
+	ship.y = HEIGHT / 3;
 	ship.ID = PLAYER;
 	ship.lives = 3;
-	ship.speed = 7;
+	ship.speed = 3;
 	ship.boundx = 6;
 	ship.boundy = 7;
 	ship.score = 0;
@@ -217,9 +283,11 @@ void DrawShip(SpaceShip &ship)
 }
 void MoveShipUp(SpaceShip &ship)
 {
-	ship.y -= ship.speed;
-	if(ship.y < 0)
-		ship.y = 0;
+
+	for (int tempo = 1; tempo < 10; tempo++)
+    {
+
+    }
 }
 void MoveShipDown(SpaceShip &ship)
 {
@@ -377,3 +445,4 @@ void CollideComet(Comet comets[], int cSize, SpaceShip &ship)
 		}
 	}
 }
+
