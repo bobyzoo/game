@@ -12,7 +12,11 @@ struct SpaceShip
 	int boundx;
 	int boundy;
 	int score;
+
 	bool jump;
+	int cont;
+	int numpulos;
+	int estagio;
 };
 
 struct Bullet
