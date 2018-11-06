@@ -72,7 +72,7 @@ int main(void)
 	InitShip(ship);
 	InitBullet(bullets, NUM_BULLETS);
 	InitComet(comets, NUM_COMETS);
-	
+
 	font18 = al_load_font("arial.ttf", 18, 0);
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -165,7 +165,7 @@ int main(void)
 
 		if(redraw && al_is_event_queue_empty(event_queue))
 		{
-			redraw = false; 
+			redraw = false;
 
 			if(!isGameOver)
 			{
@@ -179,7 +179,7 @@ int main(void)
 			{
 				al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", ship.score);
 			}
-		
+
 			al_flip_display();
 			al_clear_to_color(al_map_rgb(0,0,0));
 		}
@@ -206,8 +206,7 @@ void InitShip(SpaceShip &ship)
 }
 void DrawShip(SpaceShip &ship)
 {
-	al_draw_filled_rectangle(ship.x, ship.y - 9, ship.x + 10, ship.y - 7, al_map_rgb(255, 0, 0));
-	al_draw_filled_rectangle(ship.x, ship.y + 9, ship.x + 10, ship.y + 7, al_map_rgb(255, 0, 0));
+
 
 	al_draw_filled_triangle(ship.x - 12, ship.y - 17, ship.x +12, ship.y, ship.x - 12, ship.y + 17, al_map_rgb(0, 255, 0));
 	al_draw_filled_rectangle(ship.x - 12, ship.y - 2, ship.x +15, ship.y + 2, al_map_rgb(0, 0, 255));
