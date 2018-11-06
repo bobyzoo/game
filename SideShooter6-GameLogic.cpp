@@ -5,8 +5,8 @@
 #include "objects.h"
 
 //GLOBALS==============================
-const int WIDTH = 800;
-const int HEIGHT = 400;
+const int WIDTH = 1080;
+const int HEIGHT = 720;
 const int NUM_BULLETS = 5;
 const int NUM_COMETS = 10;
 enum KEYS{UP, DOWN, LEFT, RIGHT, SPACE};
@@ -72,7 +72,7 @@ int main(void)
 	InitShip(ship);
 	InitBullet(bullets, NUM_BULLETS);
 	InitComet(comets, NUM_COMETS);
-	
+
 	font18 = al_load_font("arial.ttf", 18, 0);
 
 	al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -99,11 +99,11 @@ int main(void)
 
 			if(!isGameOver)
 			{
-				UpdateBullet(bullets, NUM_BULLETS);
-				StartComet(comets, NUM_COMETS);
-				UpdateComet(comets, NUM_COMETS);
-				CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
-				CollideComet(comets, NUM_COMETS, ship);
+				//UpdateBullet(bullets, NUM_BULLETS);
+				//StartComet(comets, NUM_COMETS);
+				//UpdateComet(comets, NUM_COMETS);
+				//CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
+				//CollideComet(comets, NUM_COMETS, ship);
 
 				if(ship.lives <= 0)
 					isGameOver = true;
@@ -165,13 +165,15 @@ int main(void)
 
 		if(redraw && al_is_event_queue_empty(event_queue))
 		{
-			redraw = false; 
+			redraw = false;
 
 			if(!isGameOver)
 			{
-				DrawShip(ship);
-				DrawBullet(bullets, NUM_BULLETS);
-				DrawComet(comets, NUM_COMETS);
+                DrawShip(ship);
+				//DrawBullet(bullets, NUM_BULLETS);
+				//DrawComet(comets, NUM_COMETS);
+				al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
+
 
 				al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
 			}
@@ -179,9 +181,9 @@ int main(void)
 			{
 				al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", ship.score);
 			}
-		
+
 			al_flip_display();
-			al_clear_to_color(al_map_rgb(0,0,0));
+			al_clear_to_color(al_map_rgb(255,255,255));
 		}
 	}
 
@@ -203,6 +205,7 @@ void InitShip(SpaceShip &ship)
 	ship.boundx = 6;
 	ship.boundy = 7;
 	ship.score = 0;
+	ship.jump = false;
 }
 void DrawShip(SpaceShip &ship)
 {
@@ -233,8 +236,7 @@ void MoveShipLeft(SpaceShip &ship)
 void MoveShipRight(SpaceShip &ship)
 {
 	ship.x += ship.speed;
-	if(ship.x > 300)
-		ship.x = 300;
+
 }
 
 void InitBullet(Bullet bullet[], int size)
