@@ -20,12 +20,12 @@ enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE};
 bool keys[5] = {false, false, false, false, false};
 
 //prototypes
-void InitShip(SpaceShip &ship);
-void DrawShip(SpaceShip &ship);
-void MoveShipUp(SpaceShip &ship);
-void MoveShipDown(SpaceShip &ship);
-void MoveShipLeft(SpaceShip &ship);
-void MoveShipRight(SpaceShip &ship);
+void InitShip(SpaceShip ship[]);
+void DrawShip(SpaceShip ship[]);
+void MoveShipUp(SpaceShip ship[]);
+void MoveShipDown(SpaceShip ship[]);
+void MoveShipLeft(SpaceShip ship[]);
+void MoveShipRight(SpaceShip ship[]);
 
 void InitBullet(Bullet bullet[], int size);
 void DrawBullet(Bullet bullet[], int size);
@@ -40,7 +40,7 @@ void UpdateComet(Comet comets[], int size);
 void CollideComet(Comet comets[], int cSize, SpaceShip &ship);
 
 void jump(SpaceShip ship);
-void gravity(SpaceShip &ship);
+void gravity(SpaceShip ship[]);
 /*
                   _
                  (_)
@@ -63,7 +63,7 @@ int main(void)
 
 
     //object variables
-    SpaceShip ship;
+    SpaceShip ship[2];
     Bullet bullets[NUM_BULLETS];
     Comet comets[NUM_COMETS];
 
@@ -124,42 +124,38 @@ int main(void)
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
 
-            if(ship.jump)
+            if(ship[0].jump)
             {
-                if(ship.numpulos<=1)
+                if(ship[0].numpulos<=1)
                 {
 
 
 
-                    printf("%d\n",ship.cont);
-
-                    printf("%d %d %d\n\n",ship.cont,ship.estagio,ship.numpulos);
-                    if(ship.cont == time[ship.estagio])
+                    if(ship[0].cont == time[ship[0].estagio])
                     {
-                        ship.estagio++;
+                        ship[0].estagio++;
 
-                        ship.y = ship.y - jj[ship.estagio];
-                        if(ship.y<=0){
+                        ship[0].y = ship[0].y - jj[ship[0].estagio];
+                        if(ship[0].y<=0){
 
-                            ship.cont=19;
+                            ship[0].cont=19;
                         }
-                        printf("%d %d %d\n ",ship.cont,ship.estagio,ship.y);
+
 
                     }
-                    ship.cont++;
-                    if(ship.cont>=19)
+                    ship[0].cont++;
+                    if(ship[0].cont>=19)
                     {
-                        ship.cont = 0;
-                        ship.estagio = 0;
-                        ship.numpulos++;
-                        ship.jump = false;
+                        ship[0].cont = 0;
+                        ship[0].estagio = 0;
+                        ship[0].numpulos++;
+                        ship[0].jump = false;
                     }
 
                 }
                 else
                 {
-                    printf("%d \n\n",ship.y);
-                    ship.jump = false;
+                    ship[0].jump = false;
                 }
             }
 
@@ -176,11 +172,11 @@ int main(void)
 
             if(!isGameOver)
             {
-                if((!moved) && (!ship.jump))
+                if((!moved) && (!ship[0].jump))
                 {
-                    if((ship.x>=200)&&(ship.x<=800))
+                    if((ship[0].x>=200)&&(ship[0].x<=800))
                     {
-                        if((ship.y<=400)||(ship.y>=410))
+                        if((ship[0].y<=400)||(ship[0].y>=410))
                         {
                             gravity(ship);
                         }
@@ -191,13 +187,13 @@ int main(void)
                     }
                 }
                 UpdateBullet(bullets, NUM_BULLETS);
-                //	al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
+                //al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 //StartComet(comets, NUM_COMETS);
                 //UpdateComet(comets, NUM_COMETS);
-                CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
+               // CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
                 //CollideComet(comets, NUM_COMETS, ship);
 
-                if(ship.lives <= 0)
+                if(ship[0].lives <= 0)
                     isGameOver = true;
             }
         }
@@ -214,12 +210,16 @@ int main(void)
                 break;
             case ALLEGRO_KEY_UP:
                 keys[UP] = true;
-                ship.jump = true;
+                ship[0].jump = true;
 
                 break;
             case ALLEGRO_KEY_DOWN:
+                if(!(ship[0].x>=200)&&(ship[0].x<=800))
+                    {
+                        if(!(ship[0].y<=400)||(ship[0].y>=410))
+                        {
                 keys[DOWN] = true;
-                moved = true;
+                moved = true;}}
                 break;
             case ALLEGRO_KEY_LEFT:
                 keys[LEFT] = true;
@@ -232,7 +232,7 @@ int main(void)
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = true;
 
-                FireBullet(bullets, NUM_BULLETS, ship);
+                FireBullet(bullets, NUM_BULLETS, ship[0]);
                 break;
             }
         }
@@ -274,25 +274,26 @@ int main(void)
 
             if(!isGameOver)
             {
-                if((ship.y>=400)&&(ship.y<=405))
+                if((ship[0].y>=400)&&(ship[0].y<=406))
                 {
-                    if((ship.x>=200)&&(ship.x<=800))
+                    if((ship[0].x>=200)&&(ship[0].x<=800))
                     {
-                        ship.numpulos = 0;
+                        ship[0].numpulos = 0;
 
                     }
                 }
                 //printf("\n\n\n%d\n\n\n",ship.y);
-                DrawBullet(bullets, NUM_BULLETS);
+
                 //DrawComet(comets, NUM_COMETS);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 DrawShip(ship);
+                DrawBullet(bullets, NUM_BULLETS);
 
-                al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
+               // al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
             }
             else
             {
-                al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", ship.score);
+                //al_draw_textf(font18, al_map_rgb(0, 255, 255), WIDTH / 2, HEIGHT / 2, ALLEGRO_ALIGN_CENTRE, "Game Over. Final Score: %i", ship.score);
             }
 
             al_flip_display();
@@ -317,59 +318,56 @@ int main(void)
  |_|  \__,_|_| |_|\___\___/ \___||___/
                    )_)
                                      */
-void InitShip(SpaceShip &ship)
+void InitShip(SpaceShip ship[])
 {
-    ship.x = WIDTH/2;
-    ship.y = HEIGHT / 3;
-    ship.ID = PLAYER;
-    ship.lives = 3;
-    ship.speed = 5;
-    ship.boundx = 6;
-    ship.boundy = 7;
-    ship.score = 0;
-    ship.jump = false;
-    ship.cont = 0;
-    ship.numpulos=0;
-    ship.estagio = 0;
-
-}
-void DrawShip(SpaceShip &ship)
-{
-    al_draw_filled_rectangle(ship.x, ship.y - 9, ship.x + 10, ship.y - 7, al_map_rgb(255, 0, 0));
-    al_draw_filled_rectangle(ship.x, ship.y + 9, ship.x + 10, ship.y + 7, al_map_rgb(255, 0, 0));
-
-    al_draw_filled_triangle(ship.x - 12, ship.y - 17, ship.x +12, ship.y, ship.x - 12, ship.y + 17, al_map_rgb(0, 255, 0));
-    al_draw_filled_rectangle(ship.x - 12, ship.y - 2, ship.x +15, ship.y + 2, al_map_rgb(0, 0, 255));
-}
-void MoveShipUp(SpaceShip &ship)
-{
-
-    for (int tempo = 1; tempo < 10; tempo++)
-    {
-
+    for( int i = 0; i < 2; i++){
+    ship[0].x = WIDTH/2;
+    ship[0].y = HEIGHT / 3;
+    ship[0].ID = PLAYER;
+    ship[0].lives = 3;
+    ship[0].speed = 5;
+    ship[0].boundx = 6;
+    ship[0].boundy = 7;
+    ship[0].score = 0;
+    ship[0].jump = false;
+    ship[0].cont = 0;
+    ship[0].numpulos=0;
+    ship[0].estagio = 0;
     }
 }
-void MoveShipDown(SpaceShip &ship)
+void DrawShip(SpaceShip ship[])
 {
-    ship.y += ship.speed;
-    if(ship.y > HEIGHT)
-        ship.y = HEIGHT;
+
+    al_draw_filled_rectangle(ship[0].x, ship[0].y , ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
+
+
 }
-void gravity(SpaceShip &ship)
+void MoveShipUp(SpaceShip ship[])
 {
-    ship.y += 7;
-    if(ship.y > HEIGHT)
-        ship.y = HEIGHT/3;
+
+    printf("pula");
 }
-void MoveShipLeft(SpaceShip &ship)
+void MoveShipDown(SpaceShip ship[])
 {
-    ship.x -= ship.speed;
-    if(ship.x < 0)
-        ship.x = 0;
+    ship[0].y += ship[0].speed;
+    if(ship[0].y> HEIGHT)
+        ship[0].y = HEIGHT;
 }
-void MoveShipRight(SpaceShip &ship)
+void gravity(SpaceShip ship[])
 {
-    ship.x += ship.speed;
+    ship[0].y+= 7;
+    if(ship[0].y > HEIGHT)
+        ship[0].y = HEIGHT/3;
+}
+void MoveShipLeft(SpaceShip ship[])
+{
+    ship[0].x -= ship[0].speed;
+    if(ship[0].x < 0)
+        ship[0].x = 0;
+}
+void MoveShipRight(SpaceShip ship[])
+{
+    ship[0].x += ship[0].speed;
 
 }
 
@@ -387,7 +385,7 @@ void DrawBullet(Bullet bullet[], int size)
     for( int i = 0; i < size; i++)
     {
         if(bullet[i].live)
-            al_draw_filled_circle(bullet[i].x, bullet[i].y, 2, al_map_rgb(255, 255, 0));
+            al_draw_filled_circle(bullet[i].x, bullet[i].y, 2, al_map_rgb(0, 0, 0));
     }
 }
 void FireBullet(Bullet bullet[], int size, SpaceShip &ship)
