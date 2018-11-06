@@ -4,7 +4,7 @@
 //fps = frames per second = atualizacoes de tela por segundo
 #define FPS 60.0
 #define LARGURA_TELA 640
-#define ALTURA_TELA 480
+#define ALTURA_TELA 48f0
 
 ALLEGRO_DISPLAY *janela = NULL;
 ALLEGRO_EVENT_QUEUE *fila_eventos = NULL;
