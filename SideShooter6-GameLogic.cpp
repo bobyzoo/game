@@ -282,7 +282,7 @@ int main(void)
 
                     }
                 }
-                //printf("\n\n\n%d\n\n\n",ship.y);
+
 
                 //DrawComet(comets, NUM_COMETS);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
@@ -320,7 +320,7 @@ int main(void)
                                      */
 void InitShip(SpaceShip ship[])
 {
-    for( int i = 0; i < 2; i++){
+
     ship[0].x = WIDTH/2;
     ship[0].y = HEIGHT / 3;
     ship[0].ID = PLAYER;
@@ -333,13 +333,26 @@ void InitShip(SpaceShip ship[])
     ship[0].cont = 0;
     ship[0].numpulos=0;
     ship[0].estagio = 0;
-    }
+
+
+    ship[1].x = WIDTH/4;
+    ship[1].y = HEIGHT / 4;
+    ship[1].ID = PLAYER;
+    ship[1].lives = 3;
+    ship[1].speed = 5;
+    ship[1].boundx = 6;
+    ship[1].boundy = 7;
+    ship[1].score = 0;
+    ship[1].jump = false;
+    ship[1].cont = 0;
+    ship[1].numpulos=0;
+    ship[1].estagio = 0;
+
 }
 void DrawShip(SpaceShip ship[])
 {
-
+    al_draw_filled_rectangle(ship[1].x, ship[1].y , ship[1].x+10, ship[1].y+10 , al_map_rgb(0, 255, 0));
     al_draw_filled_rectangle(ship[0].x, ship[0].y , ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
-
 
 }
 void MoveShipUp(SpaceShip ship[])
