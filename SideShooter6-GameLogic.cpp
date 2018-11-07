@@ -31,9 +31,9 @@ void MoveShipRight(SpaceShip ship[],int num);
 
 void InitBullet(Bullet bullet[], int size);
 void DrawBullet(Bullet bullet[], int size);
-void FireBullet(Bullet bullet[], int size, SpaceShip &ship);
+void FireBullet(Bullet bullet[], int size, SpaceShip ship[]);
 void UpdateBullet(Bullet bullet[], int size);
-void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceShip &ship);
+void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceShip ship[]);
 
 void InitComet(Comet comets[], int size);
 void DrawComet(Comet comets[], int size);
@@ -147,6 +147,8 @@ int main(void)
             jump(ship,jj,tempo,1);
             redraw = true;
             //MOVE
+            if(keys[DOWN])
+                FireBullet(bullets,5,ship);
             if(keys[D])
                 MoveShipRight(ship,1);
             if(keys[A])
@@ -156,9 +158,9 @@ int main(void)
             if(keys[RIGHT])
                 MoveShipRight(ship,0);
             if(keys[SPACE])
-               golpe(ship,1);
+                golpe(ship,1);
             if(keys[ENTER])
-               golpe(ship,0);
+                golpe(ship,0);
             if(!isGameOver)
             {
                 for(int c=0; c<2; c++)
@@ -182,18 +184,20 @@ int main(void)
                 //al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 //StartComet(comets, NUM_COMETS);
                 //UpdateComet(comets, NUM_COMETS);
-                // CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
+                CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
                 //CollideComet(comets, NUM_COMETS, ship);
 
-                for(int c=0;c<2;c++){
-                     if(ship[c].lives <= c){
+                for(int c=0; c<2; c++)
+                {
+                    if(ship[c].lives <= c)
+                    {
                         ship[c].y = HEIGHT/4;
                         ship[c].x = WIDTH/2;
                         ship[c].lives = 3;
-                     }
+                    }
 
                 }
-                }
+            }
 
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -251,7 +255,7 @@ int main(void)
             case ALLEGRO_KEY_ENTER:
                 keys[ENTER] = true;
 
-                FireBullet(bullets, NUM_BULLETS, ship[0]);
+                FireBullet(bullets, NUM_BULLETS, ship);
                 break;
             }
         }
@@ -364,8 +368,8 @@ void InitShip(SpaceShip ship[])
     ship[0].ID = PLAYER;
     ship[0].lives = 3;
     ship[0].speed = 5;
-    ship[0].boundx = 10;
-    ship[0].boundy = 10;
+    ship[0].boundx = 20;
+    ship[0].boundy = 20;
     ship[0].score = 0;
     ship[0].jump = false;
     ship[0].cont = 0;
@@ -378,8 +382,8 @@ void InitShip(SpaceShip ship[])
     ship[1].ID = PLAYER;
     ship[1].lives = 3;
     ship[1].speed = 5;
-    ship[1].boundx = 10;
-    ship[1].boundy = 10;
+    ship[1].boundx = 20;
+    ship[1].boundy = 20;
     ship[1].score = 0;
     ship[1].jump = false;
     ship[1].cont = 0;
@@ -393,7 +397,6 @@ void DrawShip(SpaceShip ship[])
     al_draw_filled_rectangle(ship[0].x, ship[0].y, ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
 
 }
-
 
 void gravity(SpaceShip ship[],int num)
 {
@@ -453,33 +456,40 @@ void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
     }
 
 }
-void golpe(SpaceShip ship[],int num){
- if (ship[num].direcao==1){
-                ship[num].x += 20;
-                }else{
-                    ship[num].x -= 20;
-                    }
-        CollidePlayer(ship,num);
+void golpe(SpaceShip ship[],int num)
+{
+    if (ship[num].direcao==1)
+    {
+        ship[num].x += 20;
+    }
+    else
+    {
+        ship[num].x -= 20;
+    }
+    CollidePlayer(ship,num);
 
 
 }
 void CollidePlayer(SpaceShip ship[],int num)
 {
-            if(ship[0].x - ship[0].boundx < ship[1].x + ship[1].boundx &&
-                    ship[0].x + ship[0].boundx > ship[1].x - ship[1].boundx &&
-                    ship[0].y - ship[0].boundy < ship[1].y + ship[1].boundy &&
-                    ship[0].y + ship[0].boundy > ship[1].y - ship[1].boundy)
-            { printf("jpgador %d bateu\n",ship[1].lives);
-                if(num ==0){
-                    ship[1].lives--;
-                }else{
-                     ship[0].lives--;
-                }
-
-            }
-
+    if(ship[0].x - ship[0].boundx < ship[1].x + ship[1].boundx &&
+            ship[0].x + ship[0].boundx > ship[1].x - ship[1].boundx &&
+            ship[0].y - ship[0].boundy < ship[1].y + ship[1].boundy &&
+            ship[0].y + ship[0].boundy > ship[1].y - ship[1].boundy)
+    {
+        if(num ==0)
+        {
+            ship[1].lives--;
+        }
+        else
+        {
+            ship[0].lives--;
+        }
 
     }
+
+
+}
 
 
 
@@ -558,14 +568,14 @@ void DrawBullet(Bullet bullet[], int size)
             al_draw_filled_circle(bullet[i].x, bullet[i].y, 2, al_map_rgb(0, 0, 0));
     }
 }
-void FireBullet(Bullet bullet[], int size, SpaceShip &ship)
+void FireBullet(Bullet bullet[], int size, SpaceShip ship[])
 {
     for( int i = 0; i < size; i++)
     {
         if(!bullet[i].live)
         {
-            bullet[i].x = ship.x + 17;
-            bullet[i].y = ship.y;
+            bullet[i].x = ship[0].x + 17;
+            bullet[i].y = ship[0].y;
             bullet[i].live = true;
             break;
         }
@@ -583,26 +593,25 @@ void UpdateBullet(Bullet bullet[], int size)
         }
     }
 }
-void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceShip &ship)
+void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceShip ship[])
 {
     for(int i = 0; i < bSize; i++)
     {
         if(bullet[i].live)
         {
-            for(int j =0; j < cSize; j++)
+            for(int j =0; j < 2; j++)
             {
-                if(comets[j].live)
-                {
-                    if(bullet[i].x > (comets[j].x - comets[j].boundx) &&
-                            bullet[i].x < (comets[j].x + comets[j].boundx) &&
-                            bullet[i].y > (comets[j].y - comets[j].boundy) &&
-                            bullet[i].y < (comets[j].y + comets[j].boundy))
+
+                    if(bullet[i].x > (ship[j].x - ship[j].boundx) &&
+                            bullet[i].x < (ship[j].x + ship[j].boundx) &&
+                            bullet[i].y > (ship[j].y - ship[j].boundy) &&
+                            bullet[i].y < (ship[j].y + ship[j].boundy))
                     {
                         bullet[i].live = false;
-                        comets[j].live = false;
+                        ship[j].lives --;
 
-                        ship.score++;
-                    }
+                        ship[j].score++;
+
                 }
             }
         }
