@@ -16,16 +16,15 @@ int cont=0;
 int numpulos = 0;
 int estagio = 0;
 
-enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE};
-bool keys[5] = {false, false, false, false, false};
+enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W};
+bool keys[9] = {false, false, false, false, false, false, false, false, false};
 
 //prototypes
 void InitShip(SpaceShip ship[]);
 void DrawShip(SpaceShip ship[]);
-void MoveShipUp(SpaceShip ship[]);
-void MoveShipDown(SpaceShip ship[]);
-void MoveShipLeft(SpaceShip ship[]);
-void MoveShipRight(SpaceShip ship[]);
+
+void MoveShipLeft(SpaceShip ship[],int num);
+void MoveShipRight(SpaceShip ship[],int num);
 
 void InitBullet(Bullet bullet[], int size);
 void DrawBullet(Bullet bullet[], int size);
@@ -39,8 +38,8 @@ void StartComet(Comet comets[], int size);
 void UpdateComet(Comet comets[], int size);
 void CollideComet(Comet comets[], int cSize, SpaceShip &ship);
 
-void jump(SpaceShip ship[],const int jj[],const int tempo[]);
-void gravity(SpaceShip ship[]);
+void jump(SpaceShip ship[],const int jj[],const int tempo[],int i);
+void gravity(SpaceShip ship[],int num);
 /*
                   _
                  (_)
@@ -55,7 +54,7 @@ int main(void)
     //primitive variable
     bool done = false;
     const int jj []= {60,55,45,43,38,31,25,15,10,5};
-const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
+    const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
     bool redraw = true;
     const int FPS = 60;
     bool isGameOver = false;
@@ -124,34 +123,34 @@ const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
 
-            jump(ship,jj,tempo);
-
+            jump(ship,jj,tempo,0);
+            jump(ship,jj,tempo,1);
             redraw = true;
-            if(keys[UP])
-                MoveShipUp(ship);
-            if(keys[DOWN])
-                MoveShipDown(ship);
+            if(keys[D])
+                MoveShipRight(ship,1);
+            if(keys[A])
+                MoveShipLeft(ship,1);
             if(keys[LEFT])
-                MoveShipLeft(ship);
+                MoveShipLeft(ship,0);
             if(keys[RIGHT])
-                MoveShipRight(ship);
+                MoveShipRight(ship,0);
 
             if(!isGameOver)
-            {
-                if((!moved) && (!ship[0].jump))
+            {   for(int c=0;c<2;c++){
+                if((!moved) && (!ship[c].jump))
                 {
-                    if((ship[0].x>=200)&&(ship[0].x<=800))
+                    if((ship[c].x>=200)&&(ship[c].x<=800))
                     {
-                        if((ship[0].y<=400)||(ship[0].y>=410))
+                        if((ship[c].y<=400)||(ship[c].y>=410))
                         {
-                            gravity(ship);
+                            gravity(ship,c);
                         }
                     }
                     else
                     {
-                        gravity(ship);
+                        gravity(ship,c);
                     }
-                }
+                }}
                 UpdateBullet(bullets, NUM_BULLETS);
                 //al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 //StartComet(comets, NUM_COMETS);
@@ -180,12 +179,8 @@ const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
 
                 break;
             case ALLEGRO_KEY_DOWN:
-                if(!(ship[0].x>=200)&&(ship[0].x<=800))
-                    {
-                        if(!(ship[0].y<=400)||(ship[0].y>=410))
-                        {
                 keys[DOWN] = true;
-                moved = true;}}
+
                 break;
             case ALLEGRO_KEY_LEFT:
                 keys[LEFT] = true;
@@ -193,6 +188,22 @@ const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
                 break;
             case ALLEGRO_KEY_RIGHT:
                 keys[RIGHT] = true;
+
+                break;
+            case ALLEGRO_KEY_W:
+                keys[W] = true;
+                ship[1].jump = true;
+                break;
+            case ALLEGRO_KEY_A:
+                keys[A] = true;
+
+                break;
+            case ALLEGRO_KEY_S:
+                keys[S] = true;
+
+                break;
+            case ALLEGRO_KEY_D:
+                keys[D] = true;
 
                 break;
             case ALLEGRO_KEY_SPACE:
@@ -211,25 +222,36 @@ const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
                 break;
             case ALLEGRO_KEY_UP:
                 keys[UP] = false;
-                moved = false;
-
                 break;
             case ALLEGRO_KEY_DOWN:
                 keys[DOWN] = false;
-
-                moved = false;
                 break;
             case ALLEGRO_KEY_LEFT:
                 keys[LEFT] = false;
-                moved = false;
                 break;
             case ALLEGRO_KEY_RIGHT:
                 keys[RIGHT] = false;
-                moved = false;
+
+                break;
+            case ALLEGRO_KEY_W:
+                keys[W] = false;
+
+                break;
+            case ALLEGRO_KEY_A:
+                keys[A] = false;
+
+                break;
+            case ALLEGRO_KEY_S:
+                keys[S] = false;
+
+                break;
+            case ALLEGRO_KEY_D:
+                keys[D] = false;
+
                 break;
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = false;
-                moved = false;
+
                 break;
             }
         }
@@ -239,14 +261,14 @@ const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
             redraw = false;
 
             if(!isGameOver)
-            {
-                if((ship[0].y>=400)&&(ship[0].y<=406))
+            {   for(int c=0;c<2;c++){
+                if((ship[c].y>=400)&&(ship[c].y<=406))
                 {
-                    if((ship[0].x>=200)&&(ship[0].x<=800))
+                    if((ship[c].x>=200)&&(ship[c].x<=800))
                     {
-                        ship[0].numpulos = 0;
+                        ship[c].numpulos = 0;
 
-                    }
+                    }}
                 }
 
 
@@ -321,34 +343,101 @@ void DrawShip(SpaceShip ship[])
     al_draw_filled_rectangle(ship[0].x, ship[0].y , ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
 
 }
-void MoveShipUp(SpaceShip ship[])
-{
 
-    printf("pula");
-}
-void MoveShipDown(SpaceShip ship[])
+
+void gravity(SpaceShip ship[],int num)
 {
-    ship[0].y += ship[0].speed;
-    if(ship[0].y> HEIGHT)
-        ship[0].y = HEIGHT;
+    ship[num].y+= 7;
+    if(ship[num].y > HEIGHT)
+        ship[num].y = HEIGHT/3;
 }
-void gravity(SpaceShip ship[])
+void MoveShipLeft(SpaceShip ship[],int num)
 {
-    ship[0].y+= 7;
-    if(ship[0].y > HEIGHT)
-        ship[0].y = HEIGHT/3;
+    ship[num].x -= ship[num].speed;
+    if(ship[num].x < 0)
+        ship[num].x = 0;
 }
-void MoveShipLeft(SpaceShip ship[])
+void MoveShipRight(SpaceShip ship[],int num)
 {
-    ship[0].x -= ship[0].speed;
-    if(ship[0].x < 0)
-        ship[0].x = 0;
-}
-void MoveShipRight(SpaceShip ship[])
-{
-    ship[0].x += ship[0].speed;
+    ship[num].x += ship[num].speed;
 
 }
+void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
+{
+
+        if(ship[i].jump){
+                if(ship[i].numpulos<=1)
+                {
+
+
+
+
+                    if(ship[i].cont == tempo[ship[i].estagio])
+                    {
+                        ship[i].estagio++;
+
+                        ship[i].y = ship[i].y - jj[ship[i].estagio];
+                        if(ship[i].y<=0){
+
+                            ship[i].cont=19;
+                        }
+
+
+                    }
+                    ship[i].cont++;
+                    if(ship[i].cont>=19)
+                    {
+                        ship[i].cont = 0;
+                        ship[i].estagio = 0;
+                        ship[i].numpulos++;
+                        ship[i].jump = false;
+                    }
+
+                }
+                else
+                {
+                    ship[i].jump = false;
+                }
+            }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 void InitBullet(Bullet bullet[], int size)
 {
@@ -488,44 +577,3 @@ void CollideComet(Comet comets[], int cSize, SpaceShip &ship)
         }
     }
 }
-void jump(SpaceShip ship[],const int jj[],const int tempo[])
-{
-    for(int i = 0; i < 2; i++){
-        if(ship[i].jump){
-                if(ship[i].numpulos<=1)
-                {
-
-
-
-
-                    if(ship[i].cont == tempo[ship[i].estagio])
-                    {
-                        ship[i].estagio++;
-
-                        ship[i].y = ship[i].y - jj[ship[i].estagio];
-                        if(ship[i].y<=0){
-
-                            ship[i].cont=19;
-                        }
-
-
-                    }
-                    ship[i].cont++;
-                    if(ship[i].cont>=19)
-                    {
-                        ship[i].cont = 0;
-                        ship[i].estagio = 0;
-                        ship[i].numpulos++;
-                        ship[i].jump = false;
-                    }
-
-                }
-                else
-                {
-                    ship[i].jump = false;
-                }
-            }
-
-    }
-}
-
