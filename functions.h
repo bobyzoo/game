@@ -8,6 +8,11 @@
  |_|  \__,_|_| |_|\___\___/ \___||___/
                    )_)
                                      */
+
+const int WIDTH = 1080;
+const int HEIGHT = 720;
+const int NUM_BULLETS = 5;
+const int NUM_COMETS = 10;
 void InitShip(SpaceShip ship[])
 {
 
@@ -106,6 +111,63 @@ void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
         }
     }
 }
+void CollidePlayer(SpaceShip ship[],int num)
+{
+    if(ship[0].x - ship[0].boundx < ship[1].x + ship[1].boundx &&
+            ship[0].x + ship[0].boundx > ship[1].x - ship[1].boundx &&
+            ship[0].y - ship[0].boundy < ship[1].y + ship[1].boundy &&
+            ship[0].y + ship[0].boundy > ship[1].y - ship[1].boundy)
+    {
+        if(num ==0)
+        {
+            if (ship[num].direcao==1)
+            {
+                ship[0].hit=true;
+                ship[1].hitme=true;
+
+            }
+            else
+            {
+                ship[0].hit=true;
+                ship[1].hitme=true;
+
+            }
+
+            ship[1].lives--;
+        }
+        else
+        {
+            if (ship[num].direcao==1)
+            {
+                ship[1].hit=true;
+                ship[0].hitme=true;
+
+            }
+            else
+            {
+                ship[1].hit=true;
+
+                ship[0].hitme=true;
+
+            }
+            ship[0].lives--;
+        }
+
+    }
+
+
+}
+
+
+
+
+
+
+
+
+
+
+
 void golpe(SpaceShip ship[],int num,const int dange[],const int tempo[])
 {
     if(ship[num].golped)
@@ -204,62 +266,6 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num)
 
     }
 }
-void CollidePlayer(SpaceShip ship[],int num)
-{
-    if(ship[0].x - ship[0].boundx < ship[1].x + ship[1].boundx &&
-            ship[0].x + ship[0].boundx > ship[1].x - ship[1].boundx &&
-            ship[0].y - ship[0].boundy < ship[1].y + ship[1].boundy &&
-            ship[0].y + ship[0].boundy > ship[1].y - ship[1].boundy)
-    {
-        if(num ==0)
-        {
-            if (ship[num].direcao==1)
-            {
-                ship[0].hit=true;
-                ship[1].hitme=true;
-
-            }
-            else
-            {
-                ship[0].hit=true;
-                ship[1].hitme=true;
-
-            }
-
-            ship[1].lives--;
-        }
-        else
-        {
-            if (ship[num].direcao==1)
-            {
-                ship[1].hit=true;
-                ship[0].hitme=true;
-
-            }
-            else
-            {
-                ship[1].hit=true;
-
-                ship[0].hitme=true;
-
-            }
-            ship[0].lives--;
-        }
-
-    }
-
-
-}
-
-
-
-
-
-
-
-
-
-
 
 
 

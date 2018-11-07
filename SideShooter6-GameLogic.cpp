@@ -7,10 +7,7 @@
 #include<stdio.h>
 #include "functions.h"
 //GLOBALS==============================
-const int WIDTH = 1080;
-const int HEIGHT = 720;
-const int NUM_BULLETS = 5;
-const int NUM_COMETS = 10;
+
 
 
 int cont=0;
