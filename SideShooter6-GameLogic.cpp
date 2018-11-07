@@ -39,7 +39,7 @@ void StartComet(Comet comets[], int size);
 void UpdateComet(Comet comets[], int size);
 void CollideComet(Comet comets[], int cSize, SpaceShip &ship);
 
-void jump(SpaceShip ship);
+void jump(SpaceShip ship[],const int jj[],const int tempo[]);
 void gravity(SpaceShip ship[]);
 /*
                   _
@@ -54,7 +54,8 @@ int main(void)
 {
     //primitive variable
     bool done = false;
-
+    const int jj []= {60,55,45,43,38,31,25,15,10,5};
+const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
     bool redraw = true;
     const int FPS = 60;
     bool isGameOver = false;
@@ -103,8 +104,7 @@ int main(void)
 
     al_start_timer(timer);
 
-    int jj []= {60,55,45,43,38,31,25,15,10,5};
-    int time[]= {2,4,6,8,12,13,15,16,17,19};
+
     /*
   _                              _            _             _
  | |                            (_)          (_)           | |
@@ -124,41 +124,7 @@ int main(void)
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
 
-            if(ship[0].jump)
-            {
-                if(ship[0].numpulos<=1)
-                {
-
-
-
-                    if(ship[0].cont == time[ship[0].estagio])
-                    {
-                        ship[0].estagio++;
-
-                        ship[0].y = ship[0].y - jj[ship[0].estagio];
-                        if(ship[0].y<=0){
-
-                            ship[0].cont=19;
-                        }
-
-
-                    }
-                    ship[0].cont++;
-                    if(ship[0].cont>=19)
-                    {
-                        ship[0].cont = 0;
-                        ship[0].estagio = 0;
-                        ship[0].numpulos++;
-                        ship[0].jump = false;
-                    }
-
-                }
-                else
-                {
-                    ship[0].jump = false;
-                }
-            }
-
+            jump(ship,jj,tempo);
 
             redraw = true;
             if(keys[UP])
@@ -522,9 +488,44 @@ void CollideComet(Comet comets[], int cSize, SpaceShip &ship)
         }
     }
 }
-void jump(SpaceShip ship)
+void jump(SpaceShip ship[],const int jj[],const int tempo[])
 {
+    for(int i = 0; i < 2; i++){
+        if(ship[i].jump){
+                if(ship[i].numpulos<=1)
+                {
 
 
+
+
+                    if(ship[i].cont == tempo[ship[i].estagio])
+                    {
+                        ship[i].estagio++;
+
+                        ship[i].y = ship[i].y - jj[ship[i].estagio];
+                        if(ship[i].y<=0){
+
+                            ship[i].cont=19;
+                        }
+
+
+                    }
+                    ship[i].cont++;
+                    if(ship[i].cont>=19)
+                    {
+                        ship[i].cont = 0;
+                        ship[i].estagio = 0;
+                        ship[i].numpulos++;
+                        ship[i].jump = false;
+                    }
+
+                }
+                else
+                {
+                    ship[i].jump = false;
+                }
+            }
+
+    }
 }
 
