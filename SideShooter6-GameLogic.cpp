@@ -366,7 +366,7 @@ void InitShip(SpaceShip ship[])
     ship[0].x = WIDTH/2;
     ship[0].y = HEIGHT / 3;
     ship[0].ID = PLAYER;
-    ship[0].lives = 3;
+    ship[0].lives = 50;
     ship[0].speed = 5;
     ship[0].boundx = 20;
     ship[0].boundy = 20;
@@ -380,7 +380,7 @@ void InitShip(SpaceShip ship[])
     ship[1].x = WIDTH/4;
     ship[1].y = HEIGHT / 4;
     ship[1].ID = PLAYER;
-    ship[1].lives = 3;
+    ship[1].lives = 50;
     ship[1].speed = 5;
     ship[1].boundx = 20;
     ship[1].boundy = 20;
@@ -479,10 +479,27 @@ void CollidePlayer(SpaceShip ship[],int num)
     {
         if(num ==0)
         {
+            if (ship[num].direcao==1)
+            {
+                ship[1].x += 50;
+            }
+            else
+            {
+                ship[1].x -= 50;
+            }
+
             ship[1].lives--;
         }
         else
         {
+            if (ship[num].direcao==1)
+            {
+                ship[0].x+= 50;
+            }
+            else
+            {
+                ship[0].x -= 50;
+            }
             ship[0].lives--;
         }
 
@@ -602,15 +619,16 @@ void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceS
             for(int j =0; j < 2; j++)
             {
 
-                    if(bullet[i].x > (ship[j].x - ship[j].boundx) &&
-                            bullet[i].x < (ship[j].x + ship[j].boundx) &&
-                            bullet[i].y > (ship[j].y - ship[j].boundy) &&
-                            bullet[i].y < (ship[j].y + ship[j].boundy))
-                    {
-                        bullet[i].live = false;
-                        ship[j].lives --;
+                if(bullet[i].x > (ship[j].x - ship[j].boundx) &&
+                        bullet[i].x < (ship[j].x + ship[j].boundx) &&
+                        bullet[i].y > (ship[j].y - ship[j].boundy) &&
+                        bullet[i].y < (ship[j].y + ship[j].boundy))
+                {
+                    bullet[i].live = false;
 
-                        ship[j].score++;
+                    ship[j].lives --;
+
+                    ship[j].score++;
 
                 }
             }
