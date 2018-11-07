@@ -45,6 +45,7 @@ void jump(SpaceShip ship[],const int jj[],const int tempo[],int i);
 void gravity(SpaceShip ship[],int num);
 
 void golpe(SpaceShip ship[],int num);
+void CollidePlayer(SpaceShip ship[],int num);
 /*
                   _
                  (_)
@@ -184,9 +185,16 @@ int main(void)
                 // CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
                 //CollideComet(comets, NUM_COMETS, ship);
 
-                if(ship[0].lives <= 0)
-                    isGameOver = true;
-            }
+                for(int c=0;c<2;c++){
+                     if(ship[c].lives <= c){
+                        ship[c].y = HEIGHT/4;
+                        ship[c].x = WIDTH/2;
+                        ship[c].lives = 3;
+                     }
+
+                }
+                }
+
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
         {
@@ -356,8 +364,8 @@ void InitShip(SpaceShip ship[])
     ship[0].ID = PLAYER;
     ship[0].lives = 3;
     ship[0].speed = 5;
-    ship[0].boundx = 6;
-    ship[0].boundy = 7;
+    ship[0].boundx = 10;
+    ship[0].boundy = 10;
     ship[0].score = 0;
     ship[0].jump = false;
     ship[0].cont = 0;
@@ -370,8 +378,8 @@ void InitShip(SpaceShip ship[])
     ship[1].ID = PLAYER;
     ship[1].lives = 3;
     ship[1].speed = 5;
-    ship[1].boundx = 6;
-    ship[1].boundy = 7;
+    ship[1].boundx = 10;
+    ship[1].boundy = 10;
     ship[1].score = 0;
     ship[1].jump = false;
     ship[1].cont = 0;
@@ -451,8 +459,29 @@ void golpe(SpaceShip ship[],int num){
                 }else{
                     ship[num].x -= 20;
                     }
+        CollidePlayer(ship,num);
+
 
 }
+void CollidePlayer(SpaceShip ship[],int num)
+{
+            if(ship[0].x - ship[0].boundx < ship[1].x + ship[1].boundx &&
+                    ship[0].x + ship[0].boundx > ship[1].x - ship[1].boundx &&
+                    ship[0].y - ship[0].boundy < ship[1].y + ship[1].boundy &&
+                    ship[0].y + ship[0].boundy > ship[1].y - ship[1].boundy)
+            { printf("jpgador %d bateu\n",ship[1].lives);
+                if(num ==0){
+                    ship[1].lives--;
+                }else{
+                     ship[0].lives--;
+                }
+
+            }
+
+
+    }
+
+
 
 
 
