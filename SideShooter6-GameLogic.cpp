@@ -2,6 +2,7 @@
 #include <allegro5\allegro_primitives.h>
 #include <allegro5\allegro_font.h>
 #include <allegro5\allegro_ttf.h>
+#include <allegro5/allegro_image.h>
 #include "objects.h"
 #include<stdio.h>
 
@@ -20,6 +21,8 @@ enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W};
 bool keys[9] = {false, false, false, false, false, false, false, false, false};
 
 //prototypes
+
+
 void InitShip(SpaceShip ship[]);
 void DrawShip(SpaceShip ship[]);
 
@@ -66,19 +69,25 @@ int main(void)
     SpaceShip ship[2];
     Bullet bullets[NUM_BULLETS];
     Comet comets[NUM_COMETS];
+    //Sprites sprite;
 
     //Allegro variables
     ALLEGRO_DISPLAY *display = NULL;
     ALLEGRO_EVENT_QUEUE *event_queue = NULL;
     ALLEGRO_TIMER *timer = NULL;
     ALLEGRO_FONT *font18 = NULL;
+    ALLEGRO_BITMAP *folha_sprite = NULL;
 
     //Initialization Functions
     if(!al_init())										//initialize Allegro
         return -1;
 
     display = al_create_display(WIDTH, HEIGHT);			//create our display object
-
+    if (!al_init_image_addon())
+    {
+        printf("Falha ao inicializar o addon de imagens");
+        return 0;
+    }
     if(!display)										//test display object
         return -1;
 
@@ -96,7 +105,15 @@ int main(void)
     InitComet(comets, NUM_COMETS);
 
     font18 = al_load_font("arial.ttf", 18, 0);
-
+    folha_sprite = al_load_bitmap("sprite.png");
+    if (!folha_sprite)
+    {
+        printf("Falha ao carregar sprites");
+        al_destroy_timer(timer);
+        al_destroy_display(display);
+        al_destroy_event_queue(event_queue);
+        return 0;
+    }
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
     al_register_event_source(event_queue, al_get_display_event_source(display));
@@ -105,12 +122,12 @@ int main(void)
 
 
     /*
-  _                              _            _             _
- | |                            (_)          (_)           | |
- | | __ _  ___ ___    _ __  _ __ _ _ __   ___ _ _ __   __ _| |
- | |/ _` |/ __/ _ \  |  _ \|  __| |  _ \ / __| |  _ \ / _` | |
- | | (_| | (_| (_) | | |_) | |  | | | | | (__| | |_) | (_| | |
- |_|\__,_|\___\___/  | .__/|_|  |_|_| |_|\___|_| .__/ \__,_|_|
+    _                              _            _             _
+    | |                            (_)          (_)           | |
+    | | __ _  ___ ___    _ __  _ __ _ _ __   ___ _ _ __   __ _| |
+    | |/ _` |/ __/ _ \  |  _ \|  __| |  _ \ / __| |  _ \ / _` | |
+    | | (_| | (_| (_) | | |_) | |  | | | | | (__| | |_) | (_| | |
+    |_|\__,_|\___\___/  | .__/|_|  |_|_| |_|\___|_| .__/ \__,_|_|
            )_)       | |                       | |
                      |_|                       |_|
     */
@@ -136,26 +153,29 @@ int main(void)
                 MoveShipRight(ship,0);
 
             if(!isGameOver)
-            {   for(int c=0;c<2;c++){
-                if((!moved) && (!ship[c].jump))
+            {
+                for(int c=0; c<2; c++)
                 {
-                    if((ship[c].x>=200)&&(ship[c].x<=800))
+                    if((!moved) && (!ship[c].jump))
                     {
-                        if((ship[c].y<=400)||(ship[c].y>=410))
+                        if((ship[c].x>=200)&&(ship[c].x<=800))
+                        {
+                            if((ship[c].y<=400)||(ship[c].y>=410))
+                            {
+                                gravity(ship,c);
+                            }
+                        }
+                        else
                         {
                             gravity(ship,c);
                         }
                     }
-                    else
-                    {
-                        gravity(ship,c);
-                    }
-                }}
+                }
                 UpdateBullet(bullets, NUM_BULLETS);
                 //al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 //StartComet(comets, NUM_COMETS);
                 //UpdateComet(comets, NUM_COMETS);
-               // CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
+                // CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
                 //CollideComet(comets, NUM_COMETS, ship);
 
                 if(ship[0].lives <= 0)
@@ -261,23 +281,28 @@ int main(void)
             redraw = false;
 
             if(!isGameOver)
-            {   for(int c=0;c<2;c++){
-                if((ship[c].y>=400)&&(ship[c].y<=406))
+            {
+                for(int c=0; c<2; c++)
                 {
-                    if((ship[c].x>=200)&&(ship[c].x<=800))
+                    if((ship[c].y>=400)&&(ship[c].y<=406))
                     {
-                        ship[c].numpulos = 0;
+                        if((ship[c].x>=200)&&(ship[c].x<=800))
+                        {
+                            ship[c].numpulos = 0;
 
-                    }}
+                        }
+                    }
                 }
 
 
                 //DrawComet(comets, NUM_COMETS);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
-                DrawShip(ship);
-                DrawBullet(bullets, NUM_BULLETS);
 
-               // al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
+                DrawBullet(bullets, NUM_BULLETS);
+                al_draw_bitmap_region(folha_sprite,0,0,170,280,ship[0].x-60,ship[0].y-260,0);
+                DrawShip(ship);
+
+                // al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
             }
             else
             {
@@ -339,8 +364,8 @@ void InitShip(SpaceShip ship[])
 }
 void DrawShip(SpaceShip ship[])
 {
-    al_draw_filled_rectangle(ship[1].x, ship[1].y , ship[1].x+10, ship[1].y+10 , al_map_rgb(0, 255, 0));
-    al_draw_filled_rectangle(ship[0].x, ship[0].y , ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
+    al_draw_filled_rectangle(ship[1].x, ship[1].y, ship[1].x+10, ship[1].y+10, al_map_rgb(0, 255, 0));
+    al_draw_filled_rectangle(ship[0].x, ship[0].y, ship[0].x + 10, ship[0].y + 10, al_map_rgb(0, 0, 0));
 
 }
 
@@ -365,43 +390,44 @@ void MoveShipRight(SpaceShip ship[],int num)
 void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
 {
 
-        if(ship[i].jump){
-                if(ship[i].numpulos<=1)
+    if(ship[i].jump)
+    {
+        if(ship[i].numpulos<=1)
+        {
+
+
+
+
+            if(ship[i].cont == tempo[ship[i].estagio])
+            {
+                ship[i].estagio++;
+
+                ship[i].y = ship[i].y - jj[ship[i].estagio];
+                if(ship[i].y<=0)
                 {
 
-
-
-
-                    if(ship[i].cont == tempo[ship[i].estagio])
-                    {
-                        ship[i].estagio++;
-
-                        ship[i].y = ship[i].y - jj[ship[i].estagio];
-                        if(ship[i].y<=0){
-
-                            ship[i].cont=19;
-                        }
-
-
-                    }
-                    ship[i].cont++;
-                    if(ship[i].cont>=19)
-                    {
-                        ship[i].cont = 0;
-                        ship[i].estagio = 0;
-                        ship[i].numpulos++;
-                        ship[i].jump = false;
-                    }
-
+                    ship[i].cont=19;
                 }
-                else
-                {
-                    ship[i].jump = false;
-                }
+
+
+            }
+            ship[i].cont++;
+            if(ship[i].cont>=19)
+            {
+                ship[i].cont = 0;
+                ship[i].estagio = 0;
+                ship[i].numpulos++;
+                ship[i].jump = false;
             }
 
+        }
+        else
+        {
+            ship[i].jump = false;
+        }
     }
 
+}
 
 
 
@@ -414,12 +440,35 @@ void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
 
 
 
+/*void initSprite(Sprites sprite,SpaceShip ship[])
+{
+
+    sprite.altura_sprite=298;
+    sprite.largura_sprite=171;
+
+    sprite.colunas_folha=6;
+    sprite.coluna_atual=0;
+
+    sprite.linha_atual=2;
+    sprite.linhas_folha=0;
+
+    sprite.regiao_x_folha=0;
+    sprite.regiao_y_folha=0;
+
+    sprite.frames_sprite=6;
+    sprite.cont_frames=0;
+
+    sprite.pos_x_sprite=ship[0].x;
+    sprite.pos_y_sprite=ship[0].y;
+
+    sprite.vel_x_sprite=4;
+    sprite.vel_y_sprite=0;
+}
 
 
 
 
-
-
+*/
 
 
 
