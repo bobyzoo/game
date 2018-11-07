@@ -27,6 +27,8 @@ struct SpaceShip
     int cont;
     int numpulos;
     int estagio;
+
+    int direcao;
 };
 
 struct Bullet

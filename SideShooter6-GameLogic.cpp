@@ -17,8 +17,8 @@ int cont=0;
 int numpulos = 0;
 int estagio = 0;
 
-enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W};
-bool keys[9] = {false, false, false, false, false, false, false, false, false};
+enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W, ENTER};
+bool keys[10] = {false, false, false, false, false, false, false, false, false, false};
 
 //prototypes
 
@@ -43,6 +43,8 @@ void CollideComet(Comet comets[], int cSize, SpaceShip &ship);
 
 void jump(SpaceShip ship[],const int jj[],const int tempo[],int i);
 void gravity(SpaceShip ship[],int num);
+
+void golpe(SpaceShip ship[],int num);
 /*
                   _
                  (_)
@@ -62,7 +64,7 @@ int main(void)
     const int FPS = 60;
     bool isGameOver = false;
     bool moved = false;
-
+    int direcao=0;
 
 
     //object variables
@@ -139,10 +141,11 @@ int main(void)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
-
+            //JUMP
             jump(ship,jj,tempo,0);
             jump(ship,jj,tempo,1);
             redraw = true;
+            //MOVE
             if(keys[D])
                 MoveShipRight(ship,1);
             if(keys[A])
@@ -151,7 +154,10 @@ int main(void)
                 MoveShipLeft(ship,0);
             if(keys[RIGHT])
                 MoveShipRight(ship,0);
-
+            if(keys[SPACE])
+               golpe(ship,1);
+            if(keys[ENTER])
+               golpe(ship,0);
             if(!isGameOver)
             {
                 for(int c=0; c<2; c++)
@@ -204,10 +210,12 @@ int main(void)
                 break;
             case ALLEGRO_KEY_LEFT:
                 keys[LEFT] = true;
+                ship[0].direcao=0;
 
                 break;
             case ALLEGRO_KEY_RIGHT:
                 keys[RIGHT] = true;
+                ship[0].direcao=1;
 
                 break;
             case ALLEGRO_KEY_W:
@@ -216,18 +224,24 @@ int main(void)
                 break;
             case ALLEGRO_KEY_A:
                 keys[A] = true;
+                ship[1].direcao=0;
 
                 break;
             case ALLEGRO_KEY_S:
                 keys[S] = true;
 
+
                 break;
             case ALLEGRO_KEY_D:
                 keys[D] = true;
+                ship[1].direcao=1;
 
                 break;
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = true;
+                break;
+            case ALLEGRO_KEY_ENTER:
+                keys[ENTER] = true;
 
                 FireBullet(bullets, NUM_BULLETS, ship[0]);
                 break;
@@ -272,6 +286,9 @@ int main(void)
             case ALLEGRO_KEY_SPACE:
                 keys[SPACE] = false;
 
+                break;
+            case ALLEGRO_KEY_ENTER:
+                keys[ENTER] = false;
                 break;
             }
         }
@@ -428,7 +445,14 @@ void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
     }
 
 }
+void golpe(SpaceShip ship[],int num){
+ if (ship[num].direcao==1){
+                ship[num].x += 20;
+                }else{
+                    ship[num].x -= 20;
+                    }
 
+}
 
 
 
