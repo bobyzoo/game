@@ -23,12 +23,18 @@ struct SpaceShip
     int boundy;
     int score;
 
-    bool jump;
-    int cont;
-    int numpulos;
-    int estagio;
+    bool jump;  //SE ESTA PULANDO
+    int cont;      //CONTADOR DO MOVIMENTO JUMP
+    int numpulos;   //NUMEROS DE PULOS GASTOS-----MAXIMO 2 PULOS
+    int estagio;     //ESTAGIOS DE PULOS PARA FAZER UM PULO COM PONTOS INTERPOLADOS
 
-    int direcao;
+    int direcao;  //0-ESQUERDA 1-DIREITA
+    bool golped; //SE O GOLPE FOI ATIVO
+    bool hit;   //SE O PLAYER ENCOSTOU NO OPONENTE
+    int contGolp; //CONTADOR DO MOVIMENTO DE ATAQUE
+
+    bool hitme;//SE O PLAYER FOI GOLPEADO
+
 //    struct Bullet bullets;
 };
 
