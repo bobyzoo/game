@@ -33,7 +33,7 @@ void InitShip(SpaceShip ship[])
     ship[0].hit = false;
     ship[0].hitme = false;
     ship[0].direcao = 1;
-
+    ship[0].numDano = 0;
 
     ship[1].direcao = 1;
     ship[1].x = WIDTH/4;
@@ -52,6 +52,7 @@ void InitShip(SpaceShip ship[])
     ship[1].contGolp = 0;
     ship[1].hit = false;
     ship[1].hitme = false;
+    ship[1].numDano = 0;
 
 }
 void DrawShip(SpaceShip ship[])
@@ -64,8 +65,6 @@ void DrawShip(SpaceShip ship[])
 void gravity(SpaceShip ship[],int num)
 {
     ship[num].y+= 7;
-    if(ship[num].y > HEIGHT)
-        ship[num].y = HEIGHT/3;
 }
 void MoveShipLeft(SpaceShip ship[],int num)
 {
@@ -150,7 +149,7 @@ void CollidePlayer(SpaceShip ship[],int num)
                 ship[0].hitme=true;
 
             }
-            ship[0].lives -= 10;
+            ship[0].lives-=10;
         }
 
     }
@@ -209,6 +208,7 @@ void golpe(SpaceShip ship[],int num,const int dange[],const int tempo[])
         ship[num].hit=false;
 
 
+
     }
 
 
@@ -220,10 +220,11 @@ void golpe(SpaceShip ship[],int num,const int dange[],const int tempo[])
 
 
 }
-void hit(SpaceShip ship[],const int dange[],const int tempo[],int num)
+void hit(SpaceShip ship[],const int dange[],const int tempo[],int num,const float porcDano[])
 {
     int adv = (num+11)%2;
-
+    float dano =( dange[ship[num].estagio]);
+    dano = dano*(porcDano[ship[num].numDano]);
     if(ship[num].hitme)
     {
 
@@ -233,7 +234,7 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num)
             {
                 ship[num].estagio++;
 
-                ship[num].x = ship[num].x - dange[ship[num].estagio];
+                ship[num].x = ship[num].x - dano;
 
             }
             ship[num].contGolp++;
@@ -246,14 +247,16 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num)
             if(ship[num].contGolp == tempo[ship[num].estagio])
             {
                 ship[num].estagio++;
-                ship[num].x = ship[num].x + dange[ship[num].estagio];
+                ship[num].x = (ship[num].x + dano);
+
+
             }
             ship[num].contGolp++;
         }
 
 
 
-        printf("%d\n",ship[num].contGolp);
+        //printf("%d\n",ship[num].contGolp);
         if(ship[num].contGolp>=19)
         {
 
@@ -261,6 +264,7 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num)
             ship[num].estagio = 0;
             ship[num].golped = false;
             ship[num].hitme=false;
+            ship[num].numDano++;
         }
 
 

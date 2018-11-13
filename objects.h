@@ -34,6 +34,7 @@ struct SpaceShip
     int contGolp; //CONTADOR DO MOVIMENTO DE ATAQUE
 
     bool hitme;//SE O PLAYER FOI GOLPEADO
+    int numDano;//NUMERO DE DANO SOFRIDO
 
 //    struct Bullet bullets;
 };

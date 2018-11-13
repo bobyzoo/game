@@ -32,6 +32,7 @@ int main(void)
     const int jj []= {60,55,45,43,38,31,25,15,10,5};
     const int dange []= {30,30,40,43,38,31,25,15,10,5};
     const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
+    const float porcDano[] = {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.3,1.35,1.4,1.5,1.6,1.7,1.8,1.9,2};
     bool redraw = true;
     const int FPS = 60;
     bool isGameOver = false;
@@ -120,8 +121,8 @@ int main(void)
             golpe(ship,1,dange,tempo);
             golpe(ship,0,dange,tempo);
 
-            hit(ship,dange,tempo,1);
-            hit(ship,dange,tempo,0);
+            hit(ship,dange,tempo,1,porcDano);
+            hit(ship,dange,tempo,0,porcDano);
             // printf("vida 1- %d ||vida 2-%d\n\n",ship[0].lives,ship[1].lives);
             redraw = true;
             //MOVE
@@ -165,9 +166,8 @@ int main(void)
                 {
                     if(ship[c].lives <= c)
                     {
-                        ship[c].y = HEIGHT/4;
-                        ship[c].x = WIDTH/2;
-                        ship[c].lives = 200;
+                        InitShip(ship);
+
                     }
 
                 }
