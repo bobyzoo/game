@@ -55,7 +55,8 @@ int main(void)
     ALLEGRO_BITMAP *folha_sprite = NULL;
     ALLEGRO_BITMAP *fundoTela = NULL;
     ALLEGRO_BITMAP *luvinha = NULL;
-     ALLEGRO_FONT *font18 = NULL;
+    ALLEGRO_FONT *font18 = NULL;
+    ALLEGRO_BITMAP *selection = NULL;
 
 
     //object variables
@@ -94,6 +95,7 @@ int main(void)
 
     fundoTela = al_load_bitmap("telaInicial.jpg");
     luvinha = al_load_bitmap("luvinha.png");
+    selection = al_load_bitmap("preto.png");
     if (!fundoTela)
     {
         printf("Falha ao carregar telainicial");
@@ -110,6 +112,15 @@ int main(void)
         al_destroy_event_queue(event_queue);
         return 0;
     }
+    if (!selection)
+    {
+        printf("Falha ao carregar boneco");
+        al_destroy_timer(timer);
+        al_destroy_display(display);
+        al_destroy_event_queue(event_queue);
+        return 0;
+    }
+    al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
 
     InitShip(ship);
     InitBullet(bullets, NUM_BULLETS);
@@ -442,7 +453,7 @@ int main(void)
         }
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            printf("% d %d \n",pos_x,pos_y);
+            //printf("% d %d \n",pos_x,pos_y);
             switch (pagina)
             {
             case 1:
@@ -465,6 +476,7 @@ int main(void)
                 }
                 break;
             case 2:
+
                 break;
 
 
@@ -472,22 +484,30 @@ int main(void)
                 switch (clickInicial)
                 {
                 case 1:
-                    printf("começo\n");
+
+                    if(ship[0].cor > 0){
+                        ship[0].cor--;
+                    }
+                    printf("%d\n",ship[0].cor);
                     break;
                 case 2:
-                    printf("como jogar\n");
+                    if(ship[0].cor != 8){
+                        ship[0].cor++;
+
+                    }
+                     printf("%d\n",ship[0].cor);
                     break;
                 case 3:
-                    printf("credit\n");
+                    printf("<d\n");
                     break;
                 case 4:
-                    printf("credit\n");
+                    printf(">d\n");
                     break;
                 case 5:
-                    printf("credit\n");
+                    printf("g\n");
                     break;
                 case 6:
-                    printf("credit\n");
+                    printf("d\n");
                     break;
                 case 7:
                     printf("credit\n");
@@ -503,7 +523,28 @@ int main(void)
                     break;
                 case 11:
                     pagina = 2;
+                    fundoTela = al_load_bitmap("ceu.jpg");
                     break;
+                }
+
+                switch(ship[0].cor){
+                case 0:
+                    selection = al_load_bitmap("preto.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                    break;
+                case 1:
+                   selection = al_load_bitmap("vermelho.png");
+                    al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                     break;
+                case 2 :
+                    selection = al_load_bitmap("verde.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+
+                     break;
+                default:
+                    selection = al_load_bitmap("preto.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                     break;
                 }
                 break;
 
@@ -548,7 +589,7 @@ int main(void)
                         }
                     }
                 }
-
+                al_draw_bitmap(fundoTela,0,0,0);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 DrawShip(ship);
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
@@ -562,6 +603,7 @@ int main(void)
         if((redraw && al_is_event_queue_empty(event_queue)) && (pagina==3))
         {
             al_draw_bitmap(fundoTela,0,0,0);
+            al_draw_bitmap(selection,-150,0,0);
         }
 
         al_flip_display();

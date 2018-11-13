@@ -34,6 +34,7 @@ void InitShip(SpaceShip ship[])
     ship[0].hitme = false;
     ship[0].direcao = 1;
     ship[0].numDano = 0;
+    ship[0].cor = 0;
 
     ship[1].direcao = 1;
     ship[1].x = WIDTH/4;
@@ -52,6 +53,7 @@ void InitShip(SpaceShip ship[])
     ship[1].contGolp = 0;
     ship[1].hit = false;
     ship[1].hitme = false;
+    ship[1].numDano = 0;
     ship[1].numDano = 0;
 
 }

@@ -36,6 +36,8 @@ struct SpaceShip
     bool hitme;//SE O PLAYER FOI GOLPEADO
     int numDano;//NUMERO DE DANO SOFRIDO
 
+    int cor;
+
 //    struct Bullet bullets;
 };
 
