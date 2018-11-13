@@ -32,7 +32,6 @@ int main(void)
     const int jj []= {60,55,45,43,38,31,25,15,10,5};
     const int dange []= {30,30,40,43,38,31,25,15,10,5};
     const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
-    const float porcDano[] = {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.3,1.35,1.4,1.5,1.6,1.7,1.8,1.9,2};
     bool redraw = true;
     const int FPS = 60;
     bool isGameOver = false;
@@ -121,8 +120,8 @@ int main(void)
             golpe(ship,1,dange,tempo);
             golpe(ship,0,dange,tempo);
 
-            hit(ship,dange,tempo,1,porcDano);
-            hit(ship,dange,tempo,0,porcDano);
+            hit(ship,dange,tempo,1);
+            hit(ship,dange,tempo,0);
             // printf("vida 1- %d ||vida 2-%d\n\n",ship[0].lives,ship[1].lives);
             redraw = true;
             //MOVE
@@ -166,8 +165,9 @@ int main(void)
                 {
                     if(ship[c].lives <= c)
                     {
-                        InitShip(ship);
-
+                        ship[c].y = HEIGHT/4;
+                        ship[c].x = WIDTH/2;
+                        ship[c].lives = 3;
                     }
 
                 }
@@ -312,12 +312,8 @@ int main(void)
                 // DrawBullet(bullets, NUM_BULLETS);
                 al_draw_bitmap_region(folha_sprite,0,0,170,280,ship[0].x-60,ship[0].y-260,0);
                 DrawShip(ship);
-                al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
-                al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
-                al_draw_filled_rounded_rectangle(((ship[1].lives*1.5)+200+((300-ship[1].lives*1.5)*2)), 0, 800, 35, 10,10,al_map_rgb(0, 255, 0));
-                al_draw_filled_rectangle(490, 0, 510, 35,al_map_rgb(0, 0, 0));
 
-                 al_draw_textf(font18, al_map_rgb(255, 255, 255), 220, 5, 0, "Player 1                              %i     X     %i                                 Player2",ship[0].lives,ship[1].lives);
+                // al_draw_textf(font18, al_map_rgb(255, 0, 255), 5, 5, 0, "Player has %i lives left. Player has destroyed %i objects", ship.lives, ship.score);
             }
             else
             {
