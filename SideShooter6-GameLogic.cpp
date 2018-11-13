@@ -189,8 +189,6 @@ int main(void)
                     }
                 }
                 break;
-
-
             }
         }
         else if(ev.type == ALLEGRO_EVENT_DISPLAY_CLOSE)
@@ -264,8 +262,6 @@ int main(void)
                 break;
             }
                 break;
-
-
             }
 
         }else if(ev.type == ALLEGRO_EVENT_KEY_UP){
@@ -345,10 +341,7 @@ int main(void)
                     clickInicial = 0;
                 }
                 break;
-
             }
-
-
         }
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
@@ -362,18 +355,14 @@ int main(void)
                     pagina = 2;
                     break;
                 case 2:
-
                     printf("como jogar\n");
                     break;
                 case 3:
-
                     printf("credit\n");
                     break;
                 case 4:
-
                     printf("sair\n");
                     break;
-
                 }
                 break;
 
@@ -385,21 +374,18 @@ int main(void)
             al_draw_bitmap(telaInicial,0,0,0);
             switch (clickInicial)
             {
+
             case 1:
                 al_draw_bitmap(luvinha,520,230,0);
-
                 break;
             case 2:
                 al_draw_bitmap(luvinha,520,360,0);
-
                 break;
             case 3:
                 al_draw_bitmap(luvinha,520,470,0);
-
                 break;
             case 4:
                 al_draw_bitmap(luvinha,520,600,0);
-
                 break;
 
             }
@@ -415,27 +401,24 @@ int main(void)
                         if((ship[c].x>=200)&&(ship[c].x<=800))
                         {
                             ship[c].numpulos = 0;
-
                         }
                     }
                 }
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
-                //al_draw_bitmap_region(folha_sprite,0,0,170,280,ship[0].x-60,ship[0].y-260,0);
                 DrawShip(ship);
         }
         }
-
-
 
         al_flip_display();
         al_clear_to_color(al_map_rgb(255,255,255));
 
     }
+    //destroy our display object
     al_destroy_event_queue(event_queue);
     al_destroy_timer(timer);
     al_destroy_bitmap(telaInicial);
     al_destroy_bitmap(luvinha);
-    al_destroy_display(display);						//destroy our display object
+    al_destroy_display(display);
 
     return 0;
 }
