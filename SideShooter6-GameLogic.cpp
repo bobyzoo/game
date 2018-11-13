@@ -33,12 +33,17 @@ int main(void)
     const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
     bool redraw = true;
     const int FPS = 60;
+    //fim do roaund ou do time
     bool isGameOver = false;
+    //se esta se movendo e pra qual direção esta apontando
     bool moved = false;
     int direcao=0;
+    //se verdade sai do jogo
     bool done = false;
+    //numero da janela e região do click mouse
     int pagina =1;
     int clickInicial =0;
+    //posição do mouse
     int pos_x;
     int pos_y;
 
@@ -49,6 +54,7 @@ int main(void)
     ALLEGRO_BITMAP *folha_sprite = NULL;
     ALLEGRO_BITMAP *fundoTela = NULL;
     ALLEGRO_BITMAP *luvinha = NULL;
+     ALLEGRO_FONT *font18 = NULL;
 
 
     //object variables
@@ -58,6 +64,7 @@ int main(void)
     //Initialization Functions
     if(!al_init())										//initialize Allegro
         return -1;
+
 
     display = al_create_display(WIDTH, HEIGHT);			//create our display object
     if (!al_init_image_addon())
@@ -80,8 +87,9 @@ int main(void)
 
     event_queue = al_create_event_queue();
     timer = al_create_timer(1.0 / FPS);
-
     srand(time(NULL));
+
+     font18 = al_load_font("arial.ttf", 18, 0);
 
     fundoTela = al_load_bitmap("telaInicial.jpg");
     luvinha = al_load_bitmap("luvinha.png");
@@ -270,6 +278,15 @@ int main(void)
         {
             switch (pagina)
             {
+            case 1:
+                switch(ev.keyboard.keycode)
+                {
+                case ALLEGRO_KEY_ESCAPE:
+                    done = true;
+                    break;
+                }
+                break;
+
             case 2:
                 switch(ev.keyboard.keycode)
                 {
@@ -311,6 +328,14 @@ int main(void)
                     break;
                 case ALLEGRO_KEY_ENTER:
                     keys[ENTER] = false;
+                    break;
+                }
+                break;
+            case 3:
+                switch(ev.keyboard.keycode)
+                {
+                case ALLEGRO_KEY_ESCAPE:
+                    done = true;
                     break;
                 }
                 break;
@@ -431,7 +456,7 @@ int main(void)
                     printf("credit\n");
                     break;
                 case 4:
-                    printf("sair\n");
+                    done = true;
                     break;
                 }
                 break;
@@ -502,9 +527,10 @@ int main(void)
 
             }
         }
-
         if((redraw && al_is_event_queue_empty(event_queue)) && (pagina==2))
         {
+            //  redraw = false;
+
             if(!isGameOver)
             {
                 for(int c=0; c<2; c++)
@@ -514,11 +540,19 @@ int main(void)
                         if((ship[c].x>=200)&&(ship[c].x<=800))
                         {
                             ship[c].numpulos = 0;
+
                         }
                     }
                 }
+
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 DrawShip(ship);
+                al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
+                al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
+                al_draw_filled_rounded_rectangle(((ship[1].lives*1.5)+200+((300-ship[1].lives*1.5)*2)), 0, 800, 35, 10,10,al_map_rgb(0, 255, 0));
+                al_draw_filled_rectangle(490, 0, 510, 35,al_map_rgb(0, 0, 0));
+                al_draw_textf(font18, al_map_rgb(255, 255, 255), 220, 5, 0, "Player 1                              %i     X     %i                                 Player2",ship[0].lives,ship[1].lives);
+
             }
         }
         if((redraw && al_is_event_queue_empty(event_queue)) && (pagina==3))

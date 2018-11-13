@@ -19,7 +19,7 @@ void InitShip(SpaceShip ship[])
     ship[0].x = WIDTH/2;
     ship[0].y = HEIGHT / 3;
     ship[0].ID = PLAYER;
-    ship[0].lives = 3;
+    ship[0].lives = 200;
     ship[0].speed = 5;
     ship[0].boundx = 20;
     ship[0].boundy = 20;
@@ -39,7 +39,7 @@ void InitShip(SpaceShip ship[])
     ship[1].x = WIDTH/4;
     ship[1].y = HEIGHT / 4;
     ship[1].ID = PLAYER;
-    ship[1].lives = 3;
+    ship[1].lives = 200;
     ship[1].speed = 5;
     ship[1].boundx = 20;
     ship[1].boundy = 20;
@@ -133,7 +133,7 @@ void CollidePlayer(SpaceShip ship[],int num)
 
             }
 
-            ship[1].lives--;
+            ship[1].lives-=10;
         }
         else
         {
@@ -150,7 +150,7 @@ void CollidePlayer(SpaceShip ship[],int num)
                 ship[0].hitme=true;
 
             }
-            ship[0].lives--;
+            ship[0].lives -= 10;
         }
 
     }
