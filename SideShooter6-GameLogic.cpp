@@ -32,6 +32,8 @@ int main(void)
     const int dange []= {30,30,40,43,38,31,25,15,10,5};
     const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
     const float porcDano[] = {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.3,1.35,1.4,1.5,1.6,1.7,1.8,1.9,2};
+
+
     bool redraw = true;
     const int FPS = 60;
     //fim do roaund ou do time
@@ -134,7 +136,7 @@ int main(void)
 
 
     /*
-    _                              _            _             _
+     _                              _            _             _
     | |                            (_)          (_)           | |
     | | __ _  ___ ___    _ __  _ __ _ _ __   ___ _ _ __   __ _| |
     | |/ _` |/ __/ _ \  |  _ \|  __| |  _ \ / __| |  _ \ / _` | |
@@ -156,6 +158,7 @@ int main(void)
             switch(pagina)
             {
             case 2:
+
                 //JUMP
                 jump(ship,jj,tempo,0);
                 jump(ship,jj,tempo,1);
@@ -177,6 +180,7 @@ int main(void)
                     MoveShipRight(ship,0);
                 if(!isGameOver)
                 {
+
                     for(int c=0; c<2; c++)
                     {
                         if((!moved) && (!ship[c].jump))
@@ -197,7 +201,9 @@ int main(void)
 
                     UpdateBullet(bullets, NUM_BULLETS);
                     CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
-
+                    UpdateComet(comets,NUM_COMETS);
+                    CollideComet(comets,NUM_COMETS,0,ship);
+                    CollideComet(comets,NUM_COMETS,1,ship);
 
                     for(int c=0; c<2; c++)
                     {
@@ -347,8 +353,7 @@ int main(void)
                 }
                 break;
             case 3:
-                switch(ev.keyboard.keycode)
-                {
+                switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_ESCAPE:
                     done = true;
                     break;
@@ -589,9 +594,11 @@ int main(void)
                         }
                     }
                 }
+                StartComet(comets,NUM_COMETS);
                 al_draw_bitmap(fundoTela,0,0,0);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 DrawShip(ship);
+                DrawComet(comets,NUM_COMETS);
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
                 al_draw_filled_rounded_rectangle(((ship[1].lives*1.5)+200+((300-ship[1].lives*1.5)*2)), 0, 800, 35, 10,10,al_map_rgb(0, 255, 0));
