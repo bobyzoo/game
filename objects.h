@@ -40,12 +40,21 @@ struct SpaceShip
 
     struct Arm;
     int  armaAtual;
+
 };
-struct Arm{
+struct Arm
+{
     int reload;
     int municao;
     int dano;
 };
+struct Level
+{
+    int ID;
+    int Tempo;
+    int Rodadas;
+};
+
 struct Bullet
 {
     int ID;
@@ -65,7 +74,6 @@ struct Comet
     int speed;
     int boundx;
     int boundy;
-
 };
 
 struct Sprites

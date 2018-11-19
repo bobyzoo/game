@@ -14,6 +14,12 @@ const int HEIGHT = 720;
 const int NUM_BULLETS = 5;
 const int NUM_COMETS = 1;
 
+void InitMapa(Level &mapa)
+{
+    mapa.ID = 0;
+    mapa.Tempo = 0;
+    mapa.Rodadas = 0;
+}
 void InitShip(SpaceShip ship[])
 {
 
@@ -57,8 +63,8 @@ void InitShip(SpaceShip ship[])
     ship[1].hitme = false;
     ship[1].numDano = 0;
     ship[1].numDano = 0;
+    ship[1].cor = 0;
     ship[1].armaAtual = 9;
-
 }
 void DrawShip(SpaceShip ship[])
 {
