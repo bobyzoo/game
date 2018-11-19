@@ -32,6 +32,8 @@ int main(void)
     const int dange []= {30,30,40,43,38,31,25,15,10,5};
     const int tempo[]= {2,4,6,8,12,13,15,16,17,19};
     const float porcDano[] = {0.1,0.2,0.3,0.4,0.5,0.6,0.7,0.8,0.9,1,1.2,1.3,1.35,1.4,1.5,1.6,1.7,1.8,1.9,2};
+
+
     bool redraw = true;
     const int FPS = 60;
     //fim do roaund ou do time
@@ -56,21 +58,13 @@ int main(void)
     ALLEGRO_BITMAP *fundoTela = NULL;
     ALLEGRO_BITMAP *luvinha = NULL;
     ALLEGRO_FONT *font18 = NULL;
-    ALLEGRO_FONT *font60 = NULL;
     ALLEGRO_BITMAP *selection = NULL;
-    ALLEGRO_BITMAP *selection1 = NULL;
-    ALLEGRO_BITMAP *selectionMapa = NULL;
-
-
 
 
     //object variables
     SpaceShip ship[2];
     Bullet bullets[NUM_BULLETS];
     Comet comets[NUM_COMETS];
-    Level mapa;
-
-
     //Initialization Functions
     if(!al_init())										//initialize Allegro
         return -1;
@@ -99,17 +93,11 @@ int main(void)
     timer = al_create_timer(1.0 / FPS);
     srand(time(NULL));
 
-    font18 = al_load_font("arial.ttf", 18, 0);
-    font60 = al_load_font("arial.ttf", 60, 0);
+     font18 = al_load_font("arial.ttf", 18, 0);
 
     fundoTela = al_load_bitmap("telaInicial.jpg");
     luvinha = al_load_bitmap("luvinha.png");
     selection = al_load_bitmap("preto.png");
-    selection1 = al_load_bitmap("preto.png");
-    selectionMapa = al_load_bitmap("mapa01.jpg");
-
-
-
     if (!fundoTela)
     {
         printf("Falha ao carregar telainicial");
@@ -134,35 +122,11 @@ int main(void)
         al_destroy_event_queue(event_queue);
         return 0;
     }
-    if (!selectionMapa)
-    {
-        printf("Falha ao carregar o mapa");
-        al_destroy_timer(timer);
-        al_destroy_display(display);
-        al_destroy_event_queue(event_queue);
-        return 0;
-    }
-    if (!selection1)
-    {
-        printf("Falha ao carregar boneco 1");
-        al_destroy_timer(timer);
-        al_destroy_display(display);
-        al_destroy_event_queue(event_queue);
-        return 0;
-    }
-
-
-
     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-    al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-    al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
-
 
     InitShip(ship);
     InitBullet(bullets, NUM_BULLETS);
     InitComet(comets, NUM_COMETS);
-    InitMapa(mapa);
-
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
     al_register_event_source(event_queue, al_get_timer_event_source(timer));
@@ -172,7 +136,7 @@ int main(void)
 
 
     /*
-    _                              _            _             _
+     _                              _            _             _
     | |                            (_)          (_)           | |
     | | __ _  ___ ___    _ __  _ __ _ _ __   ___ _ _ __   __ _| |
     | |/ _` |/ __/ _ \  |  _ \|  __| |  _ \ / __| |  _ \ / _` | |
@@ -194,6 +158,7 @@ int main(void)
             switch(pagina)
             {
             case 2:
+
                 //JUMP
                 jump(ship,jj,tempo,0);
                 jump(ship,jj,tempo,1);
@@ -215,6 +180,7 @@ int main(void)
                     MoveShipRight(ship,0);
                 if(!isGameOver)
                 {
+
                     for(int c=0; c<2; c++)
                     {
                         if((!moved) && (!ship[c].jump))
@@ -235,7 +201,9 @@ int main(void)
 
                     UpdateBullet(bullets, NUM_BULLETS);
                     CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
-
+                    UpdateComet(comets,NUM_COMETS);
+                    CollideComet(comets,NUM_COMETS,0,ship);
+                    CollideComet(comets,NUM_COMETS,1,ship);
 
                     for(int c=0; c<2; c++)
                     {
@@ -243,9 +211,8 @@ int main(void)
                         {
                             InitShip(ship);
                         }
-                        if(ship[c].y>=HEIGHT)
-                        {
-                            InitShip(ship);
+                        if(ship[c].y>=HEIGHT){
+                             InitShip(ship);
                         }
                     }
 
@@ -386,8 +353,7 @@ int main(void)
                 }
                 break;
             case 3:
-                switch(ev.keyboard.keycode)
-                {
+                switch(ev.keyboard.keycode){
                 case ALLEGRO_KEY_ESCAPE:
                     done = true;
                     break;
@@ -492,9 +458,6 @@ int main(void)
         }
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
         {
-            printf("POS X = %d\n", pos_x);
-            printf("POS Y = %d\n", pos_y);
-
             //printf("% d %d \n",pos_x,pos_y);
             switch (pagina)
             {
@@ -527,94 +490,41 @@ int main(void)
                 {
                 case 1:
 
-                    if(ship[0].cor > 0)
-                    {
+                    if(ship[0].cor > 0){
                         ship[0].cor--;
                     }
                     printf("%d\n",ship[0].cor);
                     break;
-
                 case 2:
-                    if(ship[0].cor < 8)
-                    {
+                    if(ship[0].cor != 8){
                         ship[0].cor++;
 
                     }
-                    printf("%d\n",ship[0].cor);
+                     printf("%d\n",ship[0].cor);
                     break;
-
                 case 3:
-
                     printf("<d\n");
-                    if(ship[1].cor > 0)
-                    {
-                        ship[1].cor--;
-                    }
-                    printf("%d\n",ship[1].cor);
                     break;
-
                 case 4:
                     printf(">d\n");
-                    if(ship[1].cor < 8)
-                    {
-                        ship[1].cor++;
-
-                    }
-                    printf("%d\n",ship[0].cor);
                     break;
-
-                case 5://--------------------------------------------------------------------------------------------- AUMENTA O TEMPO
+                case 5:
                     printf("g\n");
-                    if (mapa.Tempo<81)
-                    {
-                        mapa.Tempo += 10;
-                    }
-
                     break;
-
-                case 6://---------------------------------------------------------------------------------------------DIMINUI O TEMPO
+                case 6:
                     printf("d\n");
-                    if (mapa.Tempo>0)
-                    {
-                        mapa.Tempo -= 10;
-                    }
-
                     break;
-
-                case 7://---------------------------------------------------------------------------------------------AUMENTA O NUMERO DE RODADAS
-                    printf("A\n");
-
-                    if(mapa.Rodadas < 5)
-                    {
-                        mapa.Rodadas++;
-                    }
-                    printf("Rodada = %d\n", mapa.Rodadas);
+                case 7:
+                    printf("credit\n");
                     break;
-
-                case 8://---------------------------------------------------------------------------------------------DIMINUI O NUMERO DE RODADAS
-                    printf("B\n");
-                    if(mapa.Rodadas > 0)
-                    {
-                        mapa.Rodadas--;
-                    }
-                    printf("Rodada = %d\n", mapa.Rodadas);
-
+                case 8:
+                    printf("credit\n");
                     break;
-
-                case 9://---------------------------------------------------------------------------------------------ESCOLHA DO MAPA <
-                    printf("C\n");
-                    if(mapa.ID > 0)
-                    {
-                        mapa.ID--;
-                    }
+                case 9:
+                    printf("credit\n");
                     break;
-
-                case 10://---------------------------------------------------------------------------------------------ESCOLHA DO MAPA >
-                    printf("D\n");
-                    if(mapa.ID<2)
-                    {
-                        mapa.ID++;
-                    }
+                case 10:
+                    printf("credit\n");
                     break;
                 case 11:
                     pagina = 2;
@@ -622,82 +532,24 @@ int main(void)
                     break;
                 }
 
-                for (int c = 0; c < 2; c++)
-                {
-                    if (c==1)
-                    {
-                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 1 ESCOLHIDO
-                        {
-
-                        case 0:
-                            selection = al_load_bitmap("preto.png");
-                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-                            break;
-                        case 1:
-                            selection = al_load_bitmap("vermelho.png");
-                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-                            break;
-                        case 2 :
-                            selection = al_load_bitmap("verde.png");
-                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-
-                            break;
-                        default:
-                            selection = al_load_bitmap("preto.png");
-                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-                            break;
-                        }
-                    }
-                    else
-                    {
-                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 2 ESCOLHIDO
-                        {
-
-                        case 0:
-                            selection1 = al_load_bitmap("preto.png");
-                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-                            break;
-                        case 1:
-                            selection1 = al_load_bitmap("vermelho.png");
-                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-                            break;
-                        case 2 :
-                            selection1 = al_load_bitmap("verde.png");
-                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-
-                            break;
-                        default:
-                            selection1 = al_load_bitmap("preto.png");
-                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-                            break;
-
-
-                        }
-                    }
-                }
-
-                switch(mapa.ID)//----------------------------------------------------------------------------------CARREGA O MAPA ESCOLHIDO
-                {
+                switch(ship[0].cor){
                 case 0:
-                    selectionMapa = al_load_bitmap("mapa01.jpg");
-                    al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
+                    selection = al_load_bitmap("preto.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
                     break;
-
                 case 1:
-                    selectionMapa = al_load_bitmap("mapa02.jpg");
-                    al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
-                    break;
-
+                   selection = al_load_bitmap("vermelho.png");
+                    al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                     break;
                 case 2 :
-                    selectionMapa = al_load_bitmap("mapa03.png");
-                    al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
-                    break;
+                    selection = al_load_bitmap("verde.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
 
+                     break;
                 default:
-                    selectionMapa = al_load_bitmap("mapa01.jpg");
-                    al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
-                    break;
-
+                    selection = al_load_bitmap("preto.png");
+                     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                     break;
                 }
                 break;
 
@@ -742,9 +594,11 @@ int main(void)
                         }
                     }
                 }
+                StartComet(comets,NUM_COMETS);
                 al_draw_bitmap(fundoTela,0,0,0);
                 al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
                 DrawShip(ship);
+                DrawComet(comets,NUM_COMETS);
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
                 al_draw_filled_rounded_rectangle(((ship[1].lives*1.5)+200+((300-ship[1].lives*1.5)*2)), 0, 800, 35, 10,10,al_map_rgb(0, 255, 0));
@@ -756,13 +610,7 @@ int main(void)
         if((redraw && al_is_event_queue_empty(event_queue)) && (pagina==3))
         {
             al_draw_bitmap(fundoTela,0,0,0);
-            al_draw_bitmap(selection1,-150,0,0);
-            al_draw_bitmap(selection, 125,0,0);
-            al_draw_bitmap(selectionMapa, 570,0,0);
-            al_draw_textf(font60, al_map_rgb(0, 0, 0), 265, 475, 0, "%d", mapa.Tempo);
-            al_draw_textf(font60, al_map_rgb(0, 0, 0), 345, 620, 0, "%d", mapa.Rodadas);
-
-
+            al_draw_bitmap(selection,-150,0,0);
         }
 
         al_flip_display();

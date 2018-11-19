@@ -12,14 +12,8 @@
 const int WIDTH = 1080;
 const int HEIGHT = 720;
 const int NUM_BULLETS = 5;
-const int NUM_COMETS = 10;
+const int NUM_COMETS = 1;
 
-void InitMapa(Level &mapa)
-{
-    mapa.ID = 0;
-    mapa.Tempo = 0;
-    mapa.Rodadas = 0;
-}
 void InitShip(SpaceShip ship[])
 {
 
@@ -42,6 +36,7 @@ void InitShip(SpaceShip ship[])
     ship[0].direcao = 1;
     ship[0].numDano = 0;
     ship[0].cor = 0;
+    ship[0].armaAtual = 9;
 
     ship[1].direcao = 1;
     ship[1].x = WIDTH/4;
@@ -62,7 +57,8 @@ void InitShip(SpaceShip ship[])
     ship[1].hitme = false;
     ship[1].numDano = 0;
     ship[1].numDano = 0;
-    ship[1].cor = 0;
+    ship[1].armaAtual = 9;
+
 }
 void DrawShip(SpaceShip ship[])
 {
@@ -399,12 +395,12 @@ void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceS
 }
 
 void InitComet(Comet comets[], int size)
-{
+{   //printf("OI");
     for(int i = 0; i < size; i++)
     {
         comets[i].ID = ENEMY;
         comets[i].live = false;
-        comets[i].speed = 5;
+        comets[i].speed = 10;
         comets[i].boundx = 18;
         comets[i].boundy = 18;
     }
@@ -415,26 +411,48 @@ void DrawComet(Comet comets[], int size)
     {
         if(comets[i].live)
         {
-            al_draw_filled_circle(comets[i].x, comets[i].y, 20, al_map_rgb(255, 0, 0));
+            switch(comets[i].idArm){
+
+        case 0:
+             al_draw_filled_circle(comets[i].x, comets[i].y, 20, al_map_rgb(25, 255, 0));
+            break;
+        case 1:
+             al_draw_filled_circle(comets[i].x, comets[i].y, 20, al_map_rgb(255, 25, 0));
+            break;
+        case 2:
+             al_draw_filled_circle(comets[i].x, comets[i].y, 20, al_map_rgb(255, 255, 95));
+            break;
+        case 3:
+         al_draw_filled_circle(comets[i].x, comets[i].y, 20, al_map_rgb(5, 25, 45));
+            break;
+            }
         }
     }
 }
 void StartComet(Comet comets[], int size)
 {
+    bool on = false;
+
     for(int i = 0; i < size; i++)
     {
+
         if(!comets[i].live)
         {
-            if(rand() % 500 == 0)
+            if(rand() % 250 == 0)
             {
                 comets[i].live = true;
-                comets[i].x = WIDTH;
-                comets[i].y = 30 + rand() % (HEIGHT - 60);
+                comets[i].x = 200+rand()%(WIDTH-500);
+
+                printf("\n %d",i);
+                comets[i].y = 0;
+                comets[i].idArm = rand()%4;
 
                 break;
             }
+
         }
     }
+
 }
 void UpdateComet(Comet comets[], int size)
 {
@@ -442,28 +460,35 @@ void UpdateComet(Comet comets[], int size)
     {
         if(comets[i].live)
         {
-            comets[i].x -= comets[i].speed;
+            comets[i].y += comets[i].speed;
         }
+        if(comets[i].y >=400)
+            {
+                comets[i].y = 400;
+
+            }
+
     }
 }
-void CollideComet(Comet comets[], int cSize, SpaceShip &ship)
+void CollideComet(Comet comets[], int cSize,int num,SpaceShip ship [])
 {
     for(int i = 0; i < cSize; i++)
     {
         if(comets[i].live)
         {
-            if(comets[i].x - comets[i].boundx < ship.x + ship.boundx &&
-                    comets[i].x + comets[i].boundx > ship.x - ship.boundx &&
-                    comets[i].y - comets[i].boundy < ship.y + ship.boundy &&
-                    comets[i].y + comets[i].boundy > ship.y - ship.boundy)
-            {
-                ship.lives--;
-                comets[i].live = false;
+            if(comets[i].x - comets[i].boundx < ship[num].x + ship[num].boundx &&
+                   comets[i].x + comets[i].boundx > ship[num].x - ship[num].boundx &&
+                   comets[i].y - comets[i].boundy < ship[num].y + ship[num].boundy &&
+                   comets[i].y + comets[i].boundy > ship[num].y - ship[num].boundy)
+          {
+                    comets[i].live = false;
+                    ship[num].armaAtual = comets[i].idArm;
+
             }
-            else if(comets[i].x < 0)
+             if(comets[i].y >=HEIGHT)
             {
                 comets[i].live = false;
-                ship.lives--;
+
             }
         }
     }
