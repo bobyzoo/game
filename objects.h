@@ -38,16 +38,15 @@ struct SpaceShip
 
     int cor;
 
-    struct Arm;
-    int  armaAtual;
 
-};
-struct Arm
-{
-    int reload;
+    int  armaAtual;
     int municao;
     int dano;
+    int speedBullet;
+
+
 };
+
 struct Level
 {
     int ID;
@@ -62,6 +61,7 @@ struct Bullet
     int y;
     bool live;
     int speed;
+    int direcao;
 };
 
 struct Comet

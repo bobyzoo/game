@@ -11,7 +11,6 @@
 
 const int WIDTH = 1080;
 const int HEIGHT = 720;
-const int NUM_BULLETS = 5;
 const int NUM_COMETS = 1;
 
 void InitMapa(Level &mapa)
@@ -20,6 +19,7 @@ void InitMapa(Level &mapa)
     mapa.Tempo = 0;
     mapa.Rodadas = 0;
 }
+
 void InitShip(SpaceShip ship[])
 {
 
@@ -43,7 +43,9 @@ void InitShip(SpaceShip ship[])
     ship[0].numDano = 0;
     ship[0].cor = 0;
     ship[0].armaAtual = 9;
+    ship[0].municao =1;
 
+    ship[1].municao =1;
     ship[1].direcao = 1;
     ship[1].x = WIDTH/4;
     ship[1].y = HEIGHT / 4;
@@ -329,77 +331,86 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num,const floa
 
 
 
+//-------------------------------------------BULLESTS
 
 
-
-void InitBullet(Bullet bullet[], int size)
+void InitBullet(Bullet bullet[])
 {
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < 10; i++)
     {
         bullet[i].ID = BULLET;
         bullet[i].speed = 10;
         bullet[i].live = false;
     }
 }
-void DrawBullet(Bullet bullet[], int size)
+void DrawBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
-    for( int i = 0; i < size; i++)
-    {
+    for( int i = 0; i < ship[num].municao; i++)
+    {   bullet[i].speed = ship[num].speedBullet;
         if(bullet[i].live)
             al_draw_filled_circle(bullet[i].x, bullet[i].y, 2, al_map_rgb(0, 0, 0));
     }
+
 }
-void FireBullet(Bullet bullet[], int size, SpaceShip ship[])
+void FireBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
-    for( int i = 0; i < size; i++)
+    for( int i = 0; i < ship[num].municao; i++)
     {
         if(!bullet[i].live)
-        {
-            bullet[i].x = ship[0].x + 17;
-            bullet[i].y = ship[0].y;
+        {   if(ship[num].direcao==0){
+
+            bullet[i].x = ship[num].x -10;
+            bullet[i].direcao = 0;
+            }else{
+            bullet[i].x = ship[num].x +10;
+            bullet[i].direcao = 1;
+            }
+            bullet[i].y = ship[num].y;
             bullet[i].live = true;
             break;
         }
     }
 }
-void UpdateBullet(Bullet bullet[], int size)
+void UpdateBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
-    for(int i = 0; i < size; i++)
+    for(int i = 0; i < ship[num].municao; i++)
     {
         if(bullet[i].live)
         {
+            if(bullet[i].direcao==0){
+
+            bullet[i].x -= bullet[i].speed;
+            }else{
             bullet[i].x += bullet[i].speed;
+            }
+
             if(bullet[i].x > WIDTH)
                 bullet[i].live = false;
         }
     }
 }
-void CollideBullet(Bullet bullet[], int bSize, Comet comets[], int cSize, SpaceShip ship[])
+    void CollideBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
-    for(int i = 0; i < bSize; i++)
-    {
-        if(bullet[i].live)
+   int adv = (num+11)%2;
+        for(int i = 0; i <ship[num].municao; i++)
         {
-            for(int j =0; j < 2; j++)
+            if(bullet[i].live)
             {
-
-                if(bullet[i].x > (ship[j].x - ship[j].boundx) &&
-                        bullet[i].x < (ship[j].x + ship[j].boundx) &&
-                        bullet[i].y > (ship[j].y - ship[j].boundy) &&
-                        bullet[i].y < (ship[j].y + ship[j].boundy))
+                if(bullet[i].x > (ship[adv].x - ship[adv].boundx) &&
+                        bullet[i].x < (ship[adv].x + ship[adv].boundx) &&
+                        bullet[i].y > (ship[adv].y - ship[adv].boundy) &&
+                        bullet[i].y < (ship[adv].y + ship[adv].boundy))
                 {
                     bullet[i].live = false;
 
-                    ship[j].lives --;
+                    ship[adv].lives -= ship[num].dano;
 
-                    ship[j].score++;
-
+                    ship[num].score++;
                 }
             }
         }
     }
-}
-
+//-------------------------------------COMETS
 void InitComet(Comet comets[], int size)
 {   //printf("OI");
     for(int i = 0; i < size; i++)
@@ -489,6 +500,30 @@ void CollideComet(Comet comets[], int cSize,int num,SpaceShip ship [])
           {
                     comets[i].live = false;
                     ship[num].armaAtual = comets[i].idArm;
+                    switch(comets[i].idArm){
+                case 0:
+                    ship[num].speedBullet=5;
+                    ship[num].municao=4;
+                    ship[num].dano=5;
+                break;
+                case 1:
+                    ship[num].speedBullet=10;
+                    ship[num].municao=10;
+                    ship[num].dano=2;
+                break;
+                case 2:
+                    ship[num].speedBullet=7;
+                    ship[num].municao=2;
+                    ship[num].dano=30;
+                break;
+                case 3:
+                    ship[num].speedBullet=15;
+                    ship[num].municao=1;
+                    ship[num].dano=50;
+                break;
+                    }
+
+
 
             }
              if(comets[i].y >=HEIGHT)

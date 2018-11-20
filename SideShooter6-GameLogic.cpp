@@ -10,9 +10,13 @@
 
 //GLOBALS==============================
 
+
 int cont=0;
+int timeLevel=0;
 int numpulos = 0;
 int estagio = 0;
+
+bool fire1 = false;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W, ENTER};
 bool keys[10] = {false, false, false, false, false, false, false, false, false, false};
@@ -66,9 +70,11 @@ int main(void)
 
     //object variables
     SpaceShip ship[2];
-    Bullet bullets[NUM_BULLETS];
+    Bullet bullets0[10];
+    Bullet bullets1[10];
     Comet comets[NUM_COMETS];
     Level mapa;
+
 
 
     //Initialization Functions
@@ -159,9 +165,12 @@ int main(void)
 
 
     InitShip(ship);
-    InitBullet(bullets, NUM_BULLETS);
+    InitBullet(bullets0);
+    InitBullet(bullets1);
     InitComet(comets, NUM_COMETS);
     InitMapa(mapa);
+
+
 
 
     al_register_event_source(event_queue, al_get_keyboard_event_source());
@@ -189,22 +198,35 @@ int main(void)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
-            printf("%d === %d\n",ship[0].armaAtual,ship[1].armaAtual);
+            //printf("%d === %d\n",ship[0].municao,ship[1].municao);
             redraw = true;
             switch(pagina)
             {
             case 2:
-                //JUMP
+                cont++;
+                if(cont==63){
+                    timeLevel ++;
+                    cont = 0;
+                }
+
+                if(cont%16==0){
+                    fire1 =true;
+                }
+
+                //-------------------------------------------------------------------JUMP
                 jump(ship,jj,tempo,0);
                 jump(ship,jj,tempo,1);
-                //GOLPE
+                //-------------------------------------------------------------------GOLPE
                 golpe(ship,1,dange,tempo);
                 golpe(ship,0,dange,tempo);
-
+                //-------------------------------------------------------------------SOFRE DANO
                 hit(ship,dange,tempo,1,porcDano);
                 hit(ship,dange,tempo,0,porcDano);
                 if(keys[DOWN])
-                    FireBullet(bullets,5,ship);
+                    if(fire1){
+                        FireBullet(bullets0,ship,0);
+                        fire1=false;
+                        }
                 if(keys[D])
                     MoveShipRight(ship,1);
                 if(keys[A])
@@ -233,8 +255,8 @@ int main(void)
                         }
                     }
 
-                    UpdateBullet(bullets, NUM_BULLETS);
-                    CollideBullet(bullets, NUM_BULLETS, comets, NUM_COMETS, ship);
+                    UpdateBullet(bullets0,ship,0);
+                    CollideBullet(bullets0,ship,0);
                     UpdateComet(comets,NUM_COMETS);
                     CollideComet(comets,NUM_COMETS,0,ship);
                     CollideComet(comets,NUM_COMETS,1,ship);
@@ -494,7 +516,8 @@ int main(void)
             }
         }
         else if(ev.type == ALLEGRO_EVENT_MOUSE_BUTTON_DOWN)
-        {   redraw = true;
+        {
+            redraw = true;
             printf("POS X = %d\n", pos_x);
             printf("POS Y = %d\n", pos_y);
 
@@ -747,11 +770,16 @@ int main(void)
                         }
                     }
                 }
-                  StartComet(comets,NUM_COMETS);
-                    DrawComet(comets,NUM_COMETS);
+                al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));//----------plataforma
+                StartComet(comets,NUM_COMETS);
+                DrawComet(comets,NUM_COMETS);
+
+                    if(ship[0].armaAtual!=9){
+                       DrawBullet(bullets0,ship,0);
+                    }
 
                 al_draw_bitmap(fundoTela,0,0,0);
-                al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));
+
                 DrawShip(ship);
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
