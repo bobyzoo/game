@@ -354,6 +354,7 @@ void DrawBullet(Bullet bullet[], SpaceShip ship[],int num)
 }
 void FireBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
+
     for( int i = 0; i < ship[num].municao; i++)
     {
         if(!bullet[i].live)
@@ -367,8 +368,13 @@ void FireBullet(Bullet bullet[], SpaceShip ship[],int num)
             }
             bullet[i].y = ship[num].y;
             bullet[i].live = true;
+            ship[num].reload--;
             break;
         }
+
+    }
+    if(ship[num].reload==0){
+        ship[num].armaAtual = 9;
     }
 }
 void UpdateBullet(Bullet bullet[], SpaceShip ship[],int num)
@@ -401,11 +407,11 @@ void UpdateBullet(Bullet bullet[], SpaceShip ship[],int num)
                         bullet[i].y > (ship[adv].y - ship[adv].boundy) &&
                         bullet[i].y < (ship[adv].y + ship[adv].boundy))
                 {
-                    bullet[i].live = false;
 
                     ship[adv].lives -= ship[num].dano;
 
                     ship[num].score++;
+                    bullet[i].live = false;
                 }
             }
         }
@@ -505,20 +511,24 @@ void CollideComet(Comet comets[], int cSize,int num,SpaceShip ship [])
                     ship[num].speedBullet=5;
                     ship[num].municao=4;
                     ship[num].dano=5;
+                    ship[num].reload=4;
                 break;
                 case 1:
                     ship[num].speedBullet=10;
                     ship[num].municao=10;
                     ship[num].dano=2;
+                    ship[num].reload=10;
                 break;
                 case 2:
                     ship[num].speedBullet=7;
                     ship[num].municao=2;
                     ship[num].dano=30;
+                    ship[num].reload=2;
                 break;
                 case 3:
                     ship[num].speedBullet=15;
                     ship[num].municao=1;
+                    ship[num].reload=1;
                     ship[num].dano=50;
                 break;
                     }

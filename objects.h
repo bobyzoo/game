@@ -43,6 +43,7 @@ struct SpaceShip
     int municao;
     int dano;
     int speedBullet;
+    int reload;
 
 
 };

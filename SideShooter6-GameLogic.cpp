@@ -17,6 +17,7 @@ int numpulos = 0;
 int estagio = 0;
 
 bool fire1 = false;
+bool fire2 = false;
 
 enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W, ENTER};
 bool keys[10] = {false, false, false, false, false, false, false, false, false, false};
@@ -198,12 +199,13 @@ int main(void)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
-            //printf("%d === %d\n",ship[0].municao,ship[1].municao);
+            printf("%d === %d\n",ship[0].reload,ship[1].reload);
             redraw = true;
             switch(pagina)
             {
             case 2:
                 cont++;
+                //-------------------------------------------------TEMPO DO MAPA
                 if(cont==63){
                     timeLevel ++;
                     cont = 0;
@@ -211,6 +213,7 @@ int main(void)
 
                 if(cont%16==0){
                     fire1 =true;
+                    fire2 =true;
                 }
 
                 //-------------------------------------------------------------------JUMP
@@ -222,11 +225,22 @@ int main(void)
                 //-------------------------------------------------------------------SOFRE DANO
                 hit(ship,dange,tempo,1,porcDano);
                 hit(ship,dange,tempo,0,porcDano);
-                if(keys[DOWN])
-                    if(fire1){
+                if(keys[ENTER]){
+                     if(ship[0].armaAtual!=9){
+                         if(fire1){
                         FireBullet(bullets0,ship,0);
                         fire1=false;
                         }
+                    }
+                }
+                if (keys[SPACE]){
+                    if(ship[1].armaAtual!=9){
+                         if(fire2){
+                        FireBullet(bullets1,ship,1);
+                        fire2=false;
+                        }
+                    }
+                }
                 if(keys[D])
                     MoveShipRight(ship,1);
                 if(keys[A])
@@ -257,6 +271,10 @@ int main(void)
 
                     UpdateBullet(bullets0,ship,0);
                     CollideBullet(bullets0,ship,0);
+
+                     UpdateBullet(bullets1,ship,1);
+                    CollideBullet(bullets1,ship,1);
+
                     UpdateComet(comets,NUM_COMETS);
                     CollideComet(comets,NUM_COMETS,0,ship);
                     CollideComet(comets,NUM_COMETS,1,ship);
@@ -296,23 +314,17 @@ int main(void)
                 case ALLEGRO_KEY_UP:
                     keys[UP] = true;
                     ship[0].jump = true;
-
                     break;
                 case ALLEGRO_KEY_DOWN:
                     keys[DOWN] = true;
-
                     break;
                 case ALLEGRO_KEY_LEFT:
                     keys[LEFT] = true;
                     ship[0].direcao=0;
-
-
                     break;
                 case ALLEGRO_KEY_RIGHT:
                     keys[RIGHT] = true;
                     ship[0].direcao=1;
-
-
                     break;
                 case ALLEGRO_KEY_W:
                     keys[W] = true;
@@ -321,32 +333,27 @@ int main(void)
                 case ALLEGRO_KEY_A:
                     keys[A] = true;
                     ship[1].direcao=0;
-
-
                     break;
                 case ALLEGRO_KEY_S:
                     keys[S] = true;
-
-
                     break;
                 case ALLEGRO_KEY_D:
                     keys[D] = true;
                     ship[1].direcao=1;
-
-
-
                     break;
-
                 case ALLEGRO_KEY_ENTER:
                     keys[ENTER] = true;
-                    ship[0].golped=true;
+                     if(ship[0].armaAtual==9){
+                        ship[0].golped=true;
+                    }
 
-                    // FireBullet(bullets, NUM_BULLETS, ship);
                     break;
                 case ALLEGRO_KEY_SPACE:
                     keys[SPACE] = true;
-                    ship[1].golped=true;
+                     if(ship[1].armaAtual==9){
 
+                        ship[1].golped=true;
+                    }
                     break;
                 }
                 break;
@@ -774,12 +781,10 @@ int main(void)
                 StartComet(comets,NUM_COMETS);
                 DrawComet(comets,NUM_COMETS);
 
-                    if(ship[0].armaAtual!=9){
-                       DrawBullet(bullets0,ship,0);
-                    }
+                DrawBullet(bullets0,ship,0);
+                DrawBullet(bullets1,ship,1);
 
                 al_draw_bitmap(fundoTela,0,0,0);
-
                 DrawShip(ship);
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
