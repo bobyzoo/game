@@ -215,6 +215,10 @@ int main(void)
                     fire1 =true;
                     fire2 =true;
                 }
+                if(timeLevel == mapa.Tempo){
+                    InitShip(ship);
+                    timeLevel = 0;
+                }
 
                 //-------------------------------------------------------------------JUMP
                 jump(ship,jj,tempo,0);
@@ -285,10 +289,12 @@ int main(void)
                         if(ship[c].lives <= c)
                         {
                             InitShip(ship);
+                            timeLevel = 0;
                         }
                         if(ship[c].y>=HEIGHT)
                         {
                             InitShip(ship);
+                            timeLevel = 0;
                         }
                     }
 
