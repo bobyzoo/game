@@ -363,7 +363,7 @@ void DrawBullet(Bullet bullet[], SpaceShip ship[],int num)
     for( int i = 0; i < ship[num].municao; i++)
     {   bullet[i].speed = ship[num].speedBullet;
         if(bullet[i].live)
-            al_draw_filled_circle(bullet[i].x, bullet[i].y, 2, al_map_rgb(0, 0, 0));
+            al_draw_filled_circle(bullet[i].x+15, bullet[i].y-80, 2, al_map_rgb(0, 0, 0));
     }
 
 }
