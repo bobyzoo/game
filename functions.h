@@ -44,7 +44,9 @@ void InitShip(SpaceShip ship[])
     ship[0].cor = 0;
     ship[0].armaAtual = 9;
     ship[0].municao =1;
+    ship[0].reload =0;
 
+    ship[1].municao =0;
     ship[1].municao =1;
     ship[1].direcao = 1;
     ship[1].x = WIDTH/4;
@@ -82,13 +84,10 @@ void gravity(SpaceShip ship[],int num)
 void MoveShipLeft(SpaceShip ship[],int num)
 {
     ship[num].x -= ship[num].speed;
-    if(ship[num].x < 0)
-        ship[num].x = 0;
 }
 void MoveShipRight(SpaceShip ship[],int num)
 {
     ship[num].x += ship[num].speed;
-
 }
 void jump(SpaceShip ship[],const int jj[],const int tempo[],int i)
 {
@@ -169,8 +168,6 @@ void CollidePlayer(SpaceShip ship[],int num)
 
 
 }
-
-
 
 
 
@@ -374,16 +371,18 @@ void FireBullet(Bullet bullet[], SpaceShip ship[],int num)
 
     }
     if(ship[num].reload==0){
+            printf("jogador %d TA NO SOCO\n\n",num);
         ship[num].armaAtual = 9;
+        ship[num].reload = 0;
     }
 }
 void UpdateBullet(Bullet bullet[], SpaceShip ship[],int num)
 {
-    for(int i = 0; i < ship[num].municao; i++)
+    for(int i = 0; i < (ship[num].municao); i++)
     {
         if(bullet[i].live)
         {
-            if(bullet[i].direcao==0){
+            if(bullet[i].direcao<=0){
 
             bullet[i].x -= bullet[i].speed;
             }else{
@@ -469,6 +468,7 @@ void StartComet(Comet comets[], int size)
                 printf("\n %d",i);
                 comets[i].y = 0;
                 comets[i].idArm = rand()%4;
+                printf("%d",comets[i].idArm);
 
                 break;
             }

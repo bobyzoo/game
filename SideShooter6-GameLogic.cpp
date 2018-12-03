@@ -19,7 +19,7 @@ int estagio = 0;
 bool fire1 = false;
 bool fire2 = false;
 
-enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W, ENTER};
+enum KEYS {UP, DOWN, LEFT, RIGHT, SPACE, A, S, D, W, PAD_ENTER};
 bool keys[10] = {false, false, false, false, false, false, false, false, false, false};
 /*
                   _
@@ -61,18 +61,20 @@ int main(void)
     ALLEGRO_BITMAP *fundoTela = NULL;
     ALLEGRO_BITMAP *luvinha = NULL;
     ALLEGRO_FONT *font18 = NULL;
+    ALLEGRO_FONT *font30 = NULL;
     ALLEGRO_FONT *font60 = NULL;
     ALLEGRO_BITMAP *selection = NULL;
     ALLEGRO_BITMAP *selection1 = NULL;
     ALLEGRO_BITMAP *selectionMapa = NULL;
-
+    ALLEGRO_BITMAP *selectionMapaGrande = NULL;
 
 
 
     //object variables
     SpaceShip ship[2];
     Bullet bullets0[10];
-    Bullet bullets1[10];
+    Bullet bullets1[10
+    ];
     Comet comets[NUM_COMETS];
     Level mapa;
 
@@ -107,13 +109,15 @@ int main(void)
     srand(time(NULL));
 
     font18 = al_load_font("arial.ttf", 18, 0);
+    font30 = al_load_font("arial.ttf", 30, 0);
     font60 = al_load_font("arial.ttf", 60, 0);
-
+//------------------------------------------------------------------------------------------------------------------------CARREGA IMAGENS
     fundoTela = al_load_bitmap("telaInicial.jpg");
     luvinha = al_load_bitmap("luvinha.png");
     selection = al_load_bitmap("preto.png");
     selection1 = al_load_bitmap("preto.png");
     selectionMapa = al_load_bitmap("mapa01.jpg");
+    selectionMapaGrande = al_load_bitmap("mapaG1.jpg");
 
 
 
@@ -149,6 +153,14 @@ int main(void)
         al_destroy_event_queue(event_queue);
         return 0;
     }
+    if (!selectionMapaGrande)
+    {
+        printf("Falha ao carregar o mapa grande");
+        al_destroy_timer(timer);
+        al_destroy_display(display);
+        al_destroy_event_queue(event_queue);
+        return 0;
+    }
     if (!selection1)
     {
         printf("Falha ao carregar boneco 1");
@@ -163,6 +175,7 @@ int main(void)
     al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
     al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
     al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
+    al_convert_mask_to_alpha(selectionMapaGrande,al_map_rgb(255,255,255));
 
 
     InitShip(ship);
@@ -199,23 +212,28 @@ int main(void)
 
         if(ev.type == ALLEGRO_EVENT_TIMER)
         {
-            printf("%d === %d\n",ship[0].reload,ship[1].reload);
+            //printf("%d === %d\n",ship[0].reload,ship[1].reload);
             redraw = true;
             switch(pagina)
             {
             case 2:
                 cont++;
+                printf("jogador 1==%d/%d        jogador 0==%d/%d\n\n",ship[1].armaAtual,ship[1].reload,ship[0].armaAtual,ship[0].reload);
                 //-------------------------------------------------TEMPO DO MAPA
-                if(cont==63){
+                if(cont==63)
+                {
                     timeLevel ++;
                     cont = 0;
                 }
 
-                if(cont%16==0){
+                if(cont%25==0)
+                {
                     fire1 =true;
                     fire2 =true;
+
                 }
-                if(timeLevel == mapa.Tempo){
+                if(timeLevel == mapa.Tempo)
+                {
                     InitShip(ship);
                     timeLevel = 0;
                 }
@@ -224,59 +242,150 @@ int main(void)
                 jump(ship,jj,tempo,0);
                 jump(ship,jj,tempo,1);
                 //-------------------------------------------------------------------GOLPE
-                golpe(ship,1,dange,tempo);
-                golpe(ship,0,dange,tempo);
-                //-------------------------------------------------------------------SOFRE DANO
+                if ((!((ship[1].y>410) && (ship[1].x<=745))) || (!((ship[1].y>410) && (ship[1].x>=418))))
+                {
+                    golpe(ship,1,dange,tempo);
+                }
+                if ((!((ship[0].y>410) && (ship[0].x<=745))) || (!((ship[0].y>410) && (ship[0].x>=418))))
+                {
+
+                    golpe(ship,0,dange,tempo);
+                }
+
+                //-----------------------------------------------------------------------------------------SOFRE DANO
                 hit(ship,dange,tempo,1,porcDano);
                 hit(ship,dange,tempo,0,porcDano);
-                if(keys[ENTER]){
-                     if(ship[0].armaAtual!=9){
-                         if(fire1){
-                        FireBullet(bullets0,ship,0);
-                        fire1=false;
+                if(keys[PAD_ENTER])
+                {
+                    if(ship[0].armaAtual!=9)
+                    {
+                        if(fire1)
+                        {
+                            FireBullet(bullets0,ship,0);
+                            fire1=false;
                         }
                     }
                 }
-                if (keys[SPACE]){
-                    if(ship[1].armaAtual!=9){
-                         if(fire2){
-                        FireBullet(bullets1,ship,1);
-                        fire2=false;
+                if (keys[SPACE])
+                {
+                    if(ship[1].armaAtual!=9)
+                    {
+                        if(fire2)
+                        {
+                            FireBullet(bullets1,ship,1);
+                            fire2=false;
                         }
                     }
                 }
                 if(keys[D])
-                    MoveShipRight(ship,1);
+
+                    switch (mapa.ID) //-------------------------------------------------------------------------------------------------------FAZ UMA PAREDE INVISIVEL PARA O MAPA ESCOLHIDO
+                    {
+                    case 0:
+                        if (!((ship[1].y>410) && (ship[1].x>=418)))
+                        {
+                            MoveShipRight(ship,1);
+                        }
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        break;
+                    }
+
                 if(keys[A])
-                    MoveShipLeft(ship,1);
+
+                    switch (mapa.ID) //-------------------------------------------------------------------------------------------------------FAZ UMA PAREDE INVISIVEL PARA O MAPA ESCOLHIDO
+                    {
+                    case 0:
+                        if (!((ship[1].y>410) && (ship[1].x<=745)))
+                        {
+                            MoveShipLeft(ship,1);
+                        }
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        break;
+                    }
+
                 if(keys[LEFT])
-                    MoveShipLeft(ship,0);
+                    switch (mapa.ID) //-------------------------------------------------------------------------------------------------------FAZ UMA PAREDE INVISIVEL PARA O MAPA ESCOLHIDO
+                    {
+                    case 0:
+                        if (!((ship[0].y>410) && (ship[0].x<=745)))
+                        {
+                            MoveShipLeft(ship,0);
+                        }
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        break;
+                    }
+
+
+
                 if(keys[RIGHT])
-                    MoveShipRight(ship,0);
+                    switch (mapa.ID) //-------------------------------------------------------------------------------------------------------FAZ UMA PAREDE INVISIVEL PARA O MAPA ESCOLHIDO
+                    {
+                    case 0:
+                        if (!((ship[0].y>410) && (ship[0].x>=418)))
+                        {
+                            MoveShipRight(ship,0);
+                        }
+                        break;
+
+                    case 1:
+                        break;
+
+                    case 2:
+                        break;
+                    }
+
                 if(!isGameOver)
                 {
                     for(int c=0; c<2; c++)
                     {
-                        if((!moved) && (!ship[c].jump))
+                        if(!ship[c].jump)
                         {
-                            if((ship[c].x>=200)&&(ship[c].x<=800))
+
+                            switch(mapa.ID)//---------------------------------------------------------------------------------------------- SWITCH PARA O CHÃO DOS MAPAS E GRAVIDADE
                             {
-                                if((ship[c].y<=400)||(ship[c].y>=410))
+                            case 0:
+                                if((ship[c].x>=418)&&(ship[c].x<=745)) //------------------------------------------------------------------ VERIFICA SE ESTA SOBRE ALGUMA ESTRUTURA
+                                {
+                                    if((ship[c].y<=400)||(ship[c].y>=410))
+                                    {
+                                        gravity(ship,c);
+                                    }
+                                }
+                                else
                                 {
                                     gravity(ship,c);
                                 }
+                                break;
+
+                            case 1:
+                                break;
+                            case 2:
+                                break;
+
                             }
-                            else
-                            {
-                                gravity(ship,c);
-                            }
+
                         }
                     }
 
                     UpdateBullet(bullets0,ship,0);
                     CollideBullet(bullets0,ship,0);
 
-                     UpdateBullet(bullets1,ship,1);
+                    UpdateBullet(bullets1,ship,1);
                     CollideBullet(bullets1,ship,1);
 
                     UpdateComet(comets,NUM_COMETS);
@@ -347,16 +456,18 @@ int main(void)
                     keys[D] = true;
                     ship[1].direcao=1;
                     break;
-                case ALLEGRO_KEY_ENTER:
-                    keys[ENTER] = true;
-                     if(ship[0].armaAtual==9){
+                case ALLEGRO_KEY_PAD_ENTER:
+                    keys[PAD_ENTER] = true;
+                    if(ship[0].armaAtual==9)
+                    {
                         ship[0].golped=true;
                     }
 
                     break;
                 case ALLEGRO_KEY_SPACE:
                     keys[SPACE] = true;
-                     if(ship[1].armaAtual==9){
+                    if(ship[1].armaAtual==9)
+                    {
 
                         ship[1].golped=true;
                     }
@@ -418,8 +529,8 @@ int main(void)
                     keys[SPACE] = false;
 
                     break;
-                case ALLEGRO_KEY_ENTER:
-                    keys[ENTER] = false;
+                case ALLEGRO_KEY_PAD_ENTER:
+                    keys[PAD_ENTER] = false;
                     break;
                 }
                 break;
@@ -545,27 +656,33 @@ int main(void)
                     pagina = 3;
                     fundoTela = al_load_bitmap("telaSelection.jpg");
                     break;
+
                 case 2:
                     printf("como jogar\n");
                     break;
-                case 3:
+
+                case 3: //---------------------------------------------------------------------------------------------PARA VER OS CREDITOS
                     printf("credit\n");
+                    pagina = 4;
+                    al_clear_to_color(al_map_rgb(255,255,255));
+
                     break;
+
                 case 4:
                     done = true;
                     break;
                 }
                 break;
+
             case 2:
 
                 break;
-
 
             case 3:
                 switch (clickInicial)
                 {
                 case 1:
-
+                    printf("PERSO 1 <d\n");
                     if(ship[0].cor > 0)
                     {
                         ship[0].cor--;
@@ -574,7 +691,8 @@ int main(void)
                     break;
 
                 case 2:
-                    if(ship[0].cor < 8)
+                    printf("PERSO 1 >d\n");
+                    if(ship[0].cor < 7)
                     {
                         ship[0].cor++;
 
@@ -583,8 +701,7 @@ int main(void)
                     break;
 
                 case 3:
-
-                    printf("<d\n");
+                    printf("PERSO 2<d\n");
                     if(ship[1].cor > 0)
                     {
                         ship[1].cor--;
@@ -593,8 +710,8 @@ int main(void)
                     break;
 
                 case 4:
-                    printf(">d\n");
-                    if(ship[1].cor < 8)
+                    printf("PERSO 2>d\n");
+                    if(ship[1].cor < 7)
                     {
                         ship[1].cor++;
 
@@ -655,9 +772,9 @@ int main(void)
                         mapa.ID++;
                     }
                     break;
-                case 11:
+                case 11://---------------------------------------------------------------------------------------------CARREGA O MAPA PARA MOSTRAR NO JOGO
                     pagina = 2;
-                    fundoTela = al_load_bitmap("ceu.jpg");
+                    fundoTela = selectionMapaGrande;
                     break;
                 }
 
@@ -665,7 +782,7 @@ int main(void)
                 {
                     if (c==1)
                     {
-                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 1 ESCOLHIDO
+                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 2 ESCOLHIDO
                         {
 
                         case 0:
@@ -673,13 +790,32 @@ int main(void)
                             al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
                             break;
                         case 1:
-                            selection = al_load_bitmap("vermelho.png");
+                            selection = al_load_bitmap("azul.png");
                             al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
                             break;
                         case 2 :
+                            selection = al_load_bitmap("cinza.png");
+                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                            break;
+                        case 3 :
+                            selection = al_load_bitmap("laranja.png");
+                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                            break;
+                        case 4 :
+                            selection = al_load_bitmap("amarelo.png");
+                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                            break;
+                        case 5 :
+                            selection = al_load_bitmap("rosa.png");
+                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
+                            break;
+                        case 6 :
                             selection = al_load_bitmap("verde.png");
                             al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
-
+                            break;
+                        case 7 :
+                            selection = al_load_bitmap("vermelho.png");
+                            al_convert_mask_to_alpha(selection,al_map_rgb(255,255,255));
                             break;
                         default:
                             selection = al_load_bitmap("preto.png");
@@ -687,9 +823,9 @@ int main(void)
                             break;
                         }
                     }
-                    else
+                    else if ( c == 0)
                     {
-                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 2 ESCOLHIDO
+                        switch(ship[c].cor)//----------------------------------------------------------------------------------CARREGA O PERSONAGEM 1 ESCOLHIDO
                         {
 
                         case 0:
@@ -697,19 +833,37 @@ int main(void)
                             al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
                             break;
                         case 1:
-                            selection1 = al_load_bitmap("vermelho.png");
+                            selection1 = al_load_bitmap("azul.png");
                             al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
                             break;
                         case 2 :
+                            selection1 = al_load_bitmap("cinza.png");
+                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
+                            break;
+                        case 3 :
+                            selection1 = al_load_bitmap("laranja.png");
+                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
+                            break;
+                        case 4 :
+                            selection1 = al_load_bitmap("amarelo.png");
+                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
+                            break;
+                        case 5 :
+                            selection1 = al_load_bitmap("rosa.png");
+                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
+                            break;
+                        case 6 :
                             selection1 = al_load_bitmap("verde.png");
                             al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
-
+                            break;
+                        case 7 :
+                            selection1 = al_load_bitmap("vermelho.png");
+                            al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
                             break;
                         default:
                             selection1 = al_load_bitmap("preto.png");
                             al_convert_mask_to_alpha(selection1,al_map_rgb(255,255,255));
                             break;
-
 
                         }
                     }
@@ -719,21 +873,25 @@ int main(void)
                 {
                 case 0:
                     selectionMapa = al_load_bitmap("mapa01.jpg");
+                    selectionMapaGrande = al_load_bitmap("mapaG1.jpg");
                     al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
                     break;
 
                 case 1:
-                    selectionMapa = al_load_bitmap("mapa02.jpg");
+                    selectionMapa = al_load_bitmap("mapa02.png");
+                    selectionMapaGrande = al_load_bitmap("MapaG2.png");
                     al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
                     break;
 
                 case 2 :
                     selectionMapa = al_load_bitmap("mapa03.png");
+                    selectionMapaGrande = selectionMapa;
                     al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
                     break;
 
                 default:
                     selectionMapa = al_load_bitmap("mapa01.jpg");
+                    selectionMapaGrande = selectionMapa;
                     al_convert_mask_to_alpha(selectionMapa,al_map_rgb(255,255,255));
                     break;
 
@@ -776,22 +934,24 @@ int main(void)
                 {
                     if((ship[c].y>=400)&&(ship[c].y<=406))
                     {
-                        if((ship[c].x>=200)&&(ship[c].x<=800))
+                        if((ship[c].x>=410)&&(ship[c].x<=745))
                         {
                             ship[c].numpulos = 0;
 
                         }
                     }
                 }
-                al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));//----------plataforma
-                StartComet(comets,NUM_COMETS);
-                DrawComet(comets,NUM_COMETS);
+                al_draw_filled_rectangle(200, 400, 800, 500, al_map_rgb(255, 0, 0));//--------------------------------------------------------------plataforma
 
-                DrawBullet(bullets0,ship,0);
-                DrawBullet(bullets1,ship,1);
+                StartComet(comets,NUM_COMETS);
 
                 al_draw_bitmap(fundoTela,0,0,0);
+
+                DrawComet(comets,NUM_COMETS);
+                DrawBullet(bullets0,ship,0);
+                DrawBullet(bullets1,ship,1);
                 DrawShip(ship);
+
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
                 al_draw_filled_rounded_rectangle(((ship[1].lives*1.5)+200+((300-ship[1].lives*1.5)*2)), 0, 800, 35, 10,10,al_map_rgb(0, 255, 0));
@@ -806,9 +966,20 @@ int main(void)
             al_draw_bitmap(fundoTela,0,0,0);
             al_draw_bitmap(selection1,-150,0,0);
             al_draw_bitmap(selection, 125,0,0);
-            al_draw_bitmap(selectionMapa, 570,0,0);
+            al_draw_bitmap(selectionMapa, 571, 40,0);
             al_draw_textf(font60, al_map_rgb(0, 0, 0), 265, 475, 0, "%d", mapa.Tempo);
             al_draw_textf(font60, al_map_rgb(0, 0, 0), 345, 620, 0, "%d", mapa.Rodadas);
+            redraw = false;
+
+
+        }
+        if((redraw && al_is_event_queue_empty(event_queue)) && (pagina==4)) //-----------------------------------------------------------------CREDITOS
+        {
+            al_clear_to_color(al_map_rgb(0,0,0));
+            al_draw_textf(font30, al_map_rgb(255, 255, 255), HEIGHT/2, 20, 0, "Versao brasileira");
+            al_draw_textf(font30, al_map_rgb(255, 255, 255), HEIGHT/2, 60, 0, "   IFSC Studios");
+
+
             redraw = false;
 
 

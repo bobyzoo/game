@@ -31,13 +31,12 @@ struct SpaceShip
     int direcao;  //0-ESQUERDA 1-DIREITA
     bool golped; //SE O GOLPE FOI ATIVO
     bool hit;   //SE O PLAYER ENCOSTOU NO OPONENTE
-    int contGolp;timeLevel = 0; //CONTADOR DO MOVIMENTO DE ATAQUE
+    int contGolp;
 
     bool hitme;//SE O PLAYER FOI GOLPEADO
     int numDano;//NUMERO DE DANO SOFRIDO
 
     int cor;
-
 
     int  armaAtual;//
     int municao;//MUNIÇÃO QUE CABE NA ARMA
