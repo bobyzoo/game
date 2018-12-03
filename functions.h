@@ -45,6 +45,7 @@ void InitShip(SpaceShip ship[])
     ship[0].armaAtual = 9;
     ship[0].municao =1;
     ship[0].reload =0;
+    ship[0].sprite.linha_atual=4;
 
     ship[1].municao =0;
     ship[1].municao =1;
@@ -69,6 +70,7 @@ void InitShip(SpaceShip ship[])
     ship[1].numDano = 0;
     ship[1].cor = 0;
     ship[1].armaAtual = 9;
+    ship[0].sprite.linha_atual=4;
 }
 void DrawShip(SpaceShip ship[])
 {
@@ -281,38 +283,54 @@ void hit(SpaceShip ship[],const int dange[],const int tempo[],int num,const floa
     }
 }
 
+void UpdateSprite(SpaceShip ship[],int num){
+    //a cada disparo do timer, incrementa cont_frames
+                ship[num].sprite.cont_frames++;
 
-
-/*void initSprite(Sprites sprite,SpaceShip ship[])
-{
-
-    sprite.altura_sprite=298;
-    sprite.largura_sprite=171;
-
-    sprite.colunas_folha=6;
-    sprite.coluna_atual=0;
-
-    sprite.linha_atual=2;
-    sprite.linhas_folha=0;
-
-    sprite.regiao_x_folha=0;
-    sprite.regiao_y_folha=0;
-
-    sprite.frames_sprite=6;
-    sprite.cont_frames=0;
-
-    sprite.pos_x_sprite=ship[0].x;
-    sprite.pos_y_sprite=ship[0].y;
-
-    sprite.vel_x_sprite=4;
-    sprite.vel_y_sprite=0;
+            //se alcancou a quantidade de frames que precisa passar para mudar para o proximo sprite
+            if (    ship[num].sprite.cont_frames >=     ship[num].sprite.frames_sprite){
+                //reseta cont_frames
+                    ship[num].sprite.cont_frames=0;
+                //incrementa a coluna atual, para mostrar o proximo sprite
+                    ship[num].sprite.coluna_atual++;
+                //se coluna atual passou da ultima coluna
+                if (    ship[num].sprite.coluna_atual >=     ship[num].sprite.colunas_folha){
+                    //volta pra coluna inicial
+                        ship[num].sprite.coluna_atual=0;
+                       }
+                //calcula a regiao X da folha que sera mostrada
+                    ship[num].sprite.regiao_x_folha =     ship[num].sprite.coluna_atual *     ship[num].sprite.largura_sprite;
+                    ship[num].sprite.regiao_y_folha = ship[num].sprite.linha_atual * ship[num].sprite.altura_sprite;
+            }
+            //atualiza as posicoes X Y do sprite de acordo com a velocidade, positiva ou negativa
+                ship[num].sprite.pos_x_sprite +=     ship[num].sprite.vel_x_sprite;
+                ship[num].sprite.pos_y_sprite +=     ship[num].sprite.vel_y_sprite;
 }
 
+void initSprite(SpaceShip ship[],int num)
+{
 
+    ship[num].sprite.altura_sprite=119;
+    ship[num].sprite.largura_sprite=119;
 
+    ship[num].sprite.colunas_folha=9;
+    ship[num].sprite.coluna_atual=0;
 
-*/
+    ship[num].sprite.linha_atual=4;
+    ship[num].sprite.linhas_folha=5;
 
+    ship[num].sprite.regiao_x_folha=0;
+    ship[num].sprite.regiao_y_folha=0;
+
+    ship[num].sprite.frames_sprite=6;
+    ship[num].sprite.cont_frames=0;
+
+    ship[num].sprite.pos_x_sprite=ship[0].x;
+    ship[num].sprite.pos_y_sprite=ship[0].y;
+
+    ship[num].sprite.vel_x_sprite=4;
+    ship[num].sprite.vel_y_sprite=0;
+}
 
 
 
@@ -374,6 +392,7 @@ void FireBullet(Bullet bullet[], SpaceShip ship[],int num)
             printf("jogador %d TA NO SOCO\n\n",num);
         ship[num].armaAtual = 9;
         ship[num].reload = 0;
+        ship[num].sprite.linha_atual=4;
     }
 }
 void UpdateBullet(Bullet bullet[], SpaceShip ship[],int num)
@@ -512,24 +531,28 @@ void CollideComet(Comet comets[], int cSize,int num,SpaceShip ship [])
                     ship[num].municao=4;
                     ship[num].dano=5;
                     ship[num].reload=4;
+                    ship[num].sprite.linha_atual=2;
                 break;
                 case 1:
                     ship[num].speedBullet=10;
                     ship[num].municao=10;
                     ship[num].dano=2;
                     ship[num].reload=10;
+                    ship[num].sprite.linha_atual=0;
                 break;
                 case 2:
                     ship[num].speedBullet=7;
                     ship[num].municao=2;
                     ship[num].dano=30;
                     ship[num].reload=2;
+                    ship[num].sprite.linha_atual=1;
                 break;
                 case 3:
                     ship[num].speedBullet=15;
                     ship[num].municao=1;
                     ship[num].reload=1;
                     ship[num].dano=50;
+                    ship[num].sprite.linha_atual=3;
                 break;
                     }
 

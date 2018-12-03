@@ -12,6 +12,32 @@ enum IDS {PLAYER, BULLET, ENEMY};
 
                                                   */
 
+struct Sprites
+{
+    int altura_sprite;
+    int largura_sprite;
+
+    int colunas_folha;
+    int coluna_atual;
+
+    int linha_atual;
+    int  linhas_folha;
+
+    int regiao_x_folha;
+    int  regiao_y_folha;
+
+    int frames_sprite;
+    int  cont_frames;
+
+    int pos_x_sprite;
+    int  pos_y_sprite;
+
+    int vel_x_sprite;
+    int vel_y_sprite;
+
+
+};
+
 struct SpaceShip
 {
     int ID;
@@ -43,7 +69,7 @@ struct SpaceShip
     int dano;//DANO DA ARMA
     int speedBullet;//VELOCIDADE DA BALA
     int reload;//QUANTOS TIROS JA FOI DADO
-
+    struct Sprites sprite;
 
 };
 
@@ -74,32 +100,4 @@ struct Comet
     int speed;
     int boundx;
     int boundy;
-};
-
-struct Sprites
-{
-
-
-    int altura_sprite;
-    int largura_sprite;
-
-    int colunas_folha;
-    int coluna_atual;
-
-    int linha_atual;
-    int  linhas_folha;
-
-    int regiao_x_folha;
-    int  regiao_y_folha;
-
-    int frames_sprite;
-    int  cont_frames;
-
-    int pos_x_sprite;
-    int  pos_y_sprite;
-
-    int vel_x_sprite;
-    int vel_y_sprite;
-
-
 };

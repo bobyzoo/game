@@ -70,6 +70,7 @@ int main(void)
 
 
 
+
     //object variables
     SpaceShip ship[2];
     Bullet bullets0[10];
@@ -169,6 +170,18 @@ int main(void)
         al_destroy_event_queue(event_queue);
         return 0;
     }
+    //carrega a folha de sprites na variavel
+    folha_sprite = al_load_bitmap("sprite.png");
+    if (!folha_sprite){
+        printf("Falha ao carregar sprites");
+        al_destroy_timer(timer);
+        al_destroy_display(display);
+        al_destroy_event_queue(event_queue);
+        return 0;
+    }
+    //usa a cor rosa como transparencia
+    al_convert_mask_to_alpha(folha_sprite,al_map_rgb(255,255,255));
+
 
 
 
@@ -183,6 +196,7 @@ int main(void)
     InitBullet(bullets1);
     InitComet(comets, NUM_COMETS);
     InitMapa(mapa);
+    initSprite(ship,0);
 
 
 
@@ -219,6 +233,8 @@ int main(void)
             case 2:
                 cont++;
                 printf("jogador 1==%d/%d        jogador 0==%d/%d\n\n",ship[1].armaAtual,ship[1].reload,ship[0].armaAtual,ship[0].reload);
+
+                UpdateSprite(ship,0);
                 //-------------------------------------------------TEMPO DO MAPA
                 if(cont==63)
                 {
@@ -303,6 +319,7 @@ int main(void)
                         if (!((ship[1].y>410) && (ship[1].x<=745)))
                         {
                             MoveShipLeft(ship,1);
+
                         }
                         break;
 
@@ -320,6 +337,7 @@ int main(void)
                         if (!((ship[0].y>410) && (ship[0].x<=745)))
                         {
                             MoveShipLeft(ship,0);
+
                         }
                         break;
 
@@ -339,6 +357,7 @@ int main(void)
                         if (!((ship[0].y>410) && (ship[0].x>=418)))
                         {
                             MoveShipRight(ship,0);
+
                         }
                         break;
 
@@ -951,6 +970,34 @@ int main(void)
                 DrawBullet(bullets0,ship,0);
                 DrawBullet(bullets1,ship,1);
                 DrawShip(ship);
+
+
+                if (keys[RIGHT]){
+                    al_draw_bitmap_region(folha_sprite,ship[0].sprite.regiao_x_folha,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x,ship[0].y-119,0);
+                }else if(keys[LEFT]){
+                    al_draw_scaled_bitmap(folha_sprite,
+                    ship[0].sprite.regiao_x_folha,ship[0].sprite.regiao_y_folha,
+                    ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,
+                    ship[0].x+ship[0].sprite.largura_sprite,ship[0].y-119,
+                    -ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,0);
+
+                }else{
+                    if(ship[0].direcao){
+
+
+                    al_draw_bitmap_region(folha_sprite,6*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x,ship[0].y-119,0);
+                    }
+                    else{
+                    al_draw_scaled_bitmap(folha_sprite,
+                    6*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,
+                    ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,
+                    ship[0].x+ship[0].sprite.largura_sprite,ship[0].y-119,
+                    -ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,0);
+                    }
+                }
+                //desenha sprite na posicao X Y da janela, a partir da regiao X Y da folha
+
+
 
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
