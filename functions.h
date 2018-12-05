@@ -23,8 +23,8 @@ void InitMapa(Level &mapa)
 void InitShip(SpaceShip ship[])
 {
 
-    ship[0].x = WIDTH/2;
-    ship[0].y = HEIGHT / 3;
+    ship[0].x = WIDTH/4;
+    ship[0].y = HEIGHT / 4;
     ship[0].ID = PLAYER;
     ship[0].lives = 200;
     ship[0].speed = 5;
@@ -70,7 +70,7 @@ void InitShip(SpaceShip ship[])
     ship[1].numDano = 0;
     ship[1].cor = 0;
     ship[1].armaAtual = 9;
-    ship[0].sprite.linha_atual=4;
+    ship[1].sprite.linha_atual=4;
 }
 void DrawShip(SpaceShip ship[])
 {
@@ -310,10 +310,10 @@ void UpdateSprite(SpaceShip ship[],int num){
 void initSprite(SpaceShip ship[],int num)
 {
 
-    ship[num].sprite.altura_sprite=119;
-    ship[num].sprite.largura_sprite=119;
+    ship[num].sprite.altura_sprite=100;
+    ship[num].sprite.largura_sprite=100;
 
-    ship[num].sprite.colunas_folha=9;
+    ship[num].sprite.colunas_folha=10;
     ship[num].sprite.coluna_atual=0;
 
     ship[num].sprite.linha_atual=4;
@@ -331,19 +331,6 @@ void initSprite(SpaceShip ship[],int num)
     ship[num].sprite.vel_x_sprite=4;
     ship[num].sprite.vel_y_sprite=0;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 //-------------------------------------------BULLESTS
@@ -486,7 +473,8 @@ void StartComet(Comet comets[], int size)
 
                 printf("\n %d",i);
                 comets[i].y = 0;
-                comets[i].idArm = rand()%4;
+               comets[i].idArm = rand()%4;
+               // comets[i].idArm = 1;
                 printf("%d",comets[i].idArm);
 
                 break;

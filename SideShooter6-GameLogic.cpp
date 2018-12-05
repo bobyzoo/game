@@ -245,7 +245,7 @@ folha_sprite1 = al_load_bitmap("sprite.png");
                 printf("jogador 1==%d/%d        jogador 0==%d/%d\n\n",ship[1].armaAtual,ship[1].reload,ship[0].armaAtual,ship[0].reload);
 
                 UpdateSprite(ship,0);
-                 UpdateSprite(ship,1);
+                UpdateSprite(ship,1);
                 //-------------------------------------------------TEMPO DO MAPA
                 if(cont==63)
                 {
@@ -980,57 +980,71 @@ folha_sprite1 = al_load_bitmap("sprite.png");
                 DrawComet(comets,NUM_COMETS);
                 DrawBullet(bullets0,ship,0);
                 DrawBullet(bullets1,ship,1);
-                //DrawShip(ship);
+                DrawShip(ship);
 
 
                 if (keys[RIGHT]){
-                    al_draw_bitmap_region(folha_sprite,ship[0].sprite.regiao_x_folha,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x-50,ship[0].y-119,0);
+                    al_draw_bitmap_region(folha_sprite,ship[0].sprite.regiao_x_folha,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x-50,ship[0].y-100,0);
                 }else if(keys[LEFT]){
                     al_draw_scaled_bitmap(folha_sprite,
                     ship[0].sprite.regiao_x_folha,ship[0].sprite.regiao_y_folha,
                     ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,
-                    ship[0].x-50+ship[0].sprite.largura_sprite,ship[0].y-119,
+                    ship[0].x-50+ship[0].sprite.largura_sprite,ship[0].y-100,
                     -ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,0);
 
                 }else{
                     if(ship[0].direcao){
 
 
-                    al_draw_bitmap_region(folha_sprite,6*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x-50,ship[0].y-119,0);
+                    al_draw_bitmap_region(folha_sprite,9*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,ship[0].x-50,ship[0].y-100,0);
                     }
                     else{
                     al_draw_scaled_bitmap(folha_sprite,
-                    6*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,
+                    9*ship[0].sprite.largura_sprite,ship[0].sprite.regiao_y_folha,
                     ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,
-                    ship[0].x-50+ship[0].sprite.largura_sprite,ship[0].y-119,
+                    ship[0].x-50+ship[0].sprite.largura_sprite,ship[0].y-100,
                     -ship[0].sprite.largura_sprite,ship[0].sprite.altura_sprite,0);
                     }
                 }
 
+//---------------------------------------------------------------Jogador <---
                 if (keys[D]){
-                    al_draw_bitmap_region(folha_sprite1,ship[1].sprite.regiao_x_folha,ship[1].sprite.regiao_y_folha,ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,ship[1].x-50,ship[1].y-119,0);
+                    al_draw_bitmap_region(folha_sprite1,ship[1].sprite.regiao_x_folha,ship[1].sprite.regiao_y_folha,ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,ship[1].x-50,ship[1].y-100,0);
                 }
                 else if(keys[A]){
+
                     al_draw_scaled_bitmap(folha_sprite1,
                     ship[1].sprite.regiao_x_folha,ship[1].sprite.regiao_y_folha,
                     ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,
-                    ship[1].x-50+ship[1].sprite.largura_sprite,ship[0].y-119,
-                    -ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,1);
+                    ship[1].x-50+ship[1].sprite.largura_sprite,ship[1].y-100,
+                    -ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,0);
+
 
                 }else{
                     if(ship[1].direcao){
 
 
-                    al_draw_bitmap_region(folha_sprite1,6*ship[1].sprite.largura_sprite,ship[1].sprite.regiao_y_folha,ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,ship[1].x-50,ship[1].y-119,0);
+                    al_draw_bitmap_region(folha_sprite1,9*ship[1].sprite.largura_sprite,ship[1].sprite.regiao_y_folha,ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,ship[1].x-50,ship[1].y-100,0);
                     }
                     else{
                     al_draw_scaled_bitmap(folha_sprite1,
-                    6*ship[1].sprite.largura_sprite,ship[1].sprite.regiao_y_folha,
+                    9*ship[1].sprite.largura_sprite,ship[1].sprite.regiao_y_folha,
                     ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,
-                    ship[1].x-50+ship[1].sprite.largura_sprite,ship[1].y-119,
+                    ship[1].x-50+ship[1].sprite.largura_sprite,ship[1].y-100,
                     -ship[1].sprite.largura_sprite,ship[1].sprite.altura_sprite,0);
                     }
                 }
+
+
+
+
+
+
+
+
+
+
+
                 //desenha sprite na posicao X Y da janela, a partir da regiao X Y da folha
                 al_draw_filled_rounded_rectangle(200, 0, 800, 35, 10,10,al_map_rgb(0, 0, 255));
                 al_draw_filled_rounded_rectangle(200, 0, (ship[0].lives*1.5)+200, 35, 10,10,al_map_rgb(255, 0, 0));
